@@ -1,10 +1,10 @@
 svg path {
-    transition: 1s;
+    transition: 0.5s linear;
 }
 
 svg:hover path.tail {
     d: path('M 60 80 L 60 20 C 60 0 20 0 20 20 L 20 80');
-    transform: translateX(80px);
+    transform: translate(80px, 0);
 }
 
 svg path.body {
@@ -14,4 +14,12 @@ svg path.body {
 svg:hover path.body {
     d: path('M 20 0 C 33.3333 0 46.6667 0 60 0 C 60 26.6667 60 53.3333 60 80 C 46.6667 80 33.3333 80 20 80 C 20 53.3333 20 26.6667 20 0');
     transform: translate(80px, 80px);
+}
+
+svg path.head {
+    transform: translate(80px, 80px);
+}
+
+svg:hover path.head {
+    transform: translate(80px, 160px);
 }
