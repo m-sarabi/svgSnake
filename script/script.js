@@ -31,19 +31,23 @@ bodyStraightSVG.appendChild(bodyStraightPath);
 bodyStraightSVG.appendChild(bodyStraightPathStroke);
 
 // snake head
+const headMainD = 'M 0 60 C 6.6667 60 13.3333 60 20 60 C 27 67 33 67 40 60 C 46.6667 60 53.3333 60 60 60 C 80 60 80 20 60 20 C 53.3333 20 46.6667 20 40 20 C 33 13 27 13 20 20 C 13.3333 20 6.6667 20 0 20';
+const headNoseD = 'M 65 30 C 66 32 66 33 65 35 M 65 50 C 66 48 66 47 65 45';
+const headEyesD = 'M 30 20 C 35 20 35 25 30 25 C 26 25 26 20 30 20 M 30 60 C 35 60 35 55 30 55 C 26 55 26 60 30 60';
+
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 const headGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 const headMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headMain.setAttribute('d', 'M 0 60 C 6.6667 60 13.3333 60 20 60 C 27 67 33 67 40 60 C 46.6667 60 53.3333 60 60 60 C 80 60 80 20 60 20 C 53.3333 20 46.6667 20 40 20 C 33 13 27 13 20 20 C 13.3333 20 6.6667 20 0 20');
+headMain.setAttribute('d', headMainD);
 headMain.setAttribute('fill', 'orange');
 headMain.setAttribute('stroke', 'black');
 const headNose = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headNose.setAttribute('d', 'M 65 30 C 66 32 66 33 65 35 M 65 50 C 66 48 66 47 65 45');
+headNose.setAttribute('d', headNoseD);
 headNose.setAttribute('fill', 'transparent');
 headNose.setAttribute('stroke', 'black');
 headNose.setAttribute('stroke-linecap', 'round');
 const headEyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headEyes.setAttribute('d', 'M 30 20 C 35 20 35 25 30 25 C 26 25 26 20 30 20 M 30 60 C 35 60 35 55 30 55 C 26 55 26 60 30 60');
+headEyes.setAttribute('d', headEyesD);
 headEyes.setAttribute('fill', 'white');
 headEyes.setAttribute('stroke', 'black');
 const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
@@ -60,3 +64,39 @@ headGroup.appendChild(headMain);
 headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
+
+document.body.appendChild(headSVG);
+
+function rotatePath(svgPath) {
+    const parts = svgPath.split(/(?=[MC])/);
+    let rotatedPath = '';
+    for (const part of parts) {
+        const type = part[0];
+        const coords = part.slice(1).trim().split(/\s+/);
+        switch (type) {
+            case 'M':
+                rotatedPath += `${type} ${-parseFloat(coords[1]) + 80} ${parseFloat(coords[0])} `;
+                break;
+            case 'C':
+                rotatedPath += `${type} ${-parseFloat(coords[1]) + 80} ${parseFloat(coords[0])} ${-parseFloat(coords[3]) + 80} ${parseFloat(coords[2])} ${-parseFloat(coords[5]) + 80} ${parseFloat(coords[4])}     `;
+        }
+    }
+    return rotatedPath.trim().replace(/  +/, ' ');
+}
+
+function movePath(svgPath, x, y) {
+    const parts = svgPath.split(/(?=[MC])/);
+    let translatedPath = '';
+    for (const part of parts) {
+        const type = part[0];
+        const coords = part.slice(1).trim().split(/\s+/);
+        switch (type) {
+            case 'M':
+                translatedPath += `${type} ${parseFloat(coords[0]) + x} ${parseFloat(coords[1]) + y} `;
+                break;
+            case 'C':
+                translatedPath += `${type} ${parseFloat(coords[0]) + x} ${parseFloat(coords[1]) + y} ${parseFloat(coords[2]) + x} ${parseFloat(coords[3]) + y} ${parseFloat(coords[4]) + x} ${parseFloat(coords[5]) + y}     `;
+        }
+    }
+    return translatedPath.trim().replace(/  +/, ' ');
+}
