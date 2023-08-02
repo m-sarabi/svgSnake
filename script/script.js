@@ -114,3 +114,84 @@ function movePath(svgPath, x, y) {
     }
     return translatedPath.trim().replace(/  +/, ' ');
 }
+
+function movePart(part, direction) {
+    let children;
+    if (part.type === 'head') {
+        children = part.element.children[0].children;
+    } else {
+        children = part.element.children;
+    }
+    let x, y;
+    switch (direction) {
+        case 'up':
+            [x, y] = [0, -cellSize];
+            break;
+        case 'right':
+            [x, y] = [cellSize, 0];
+            break;
+        case 'down':
+            [x, y] = [0, cellSize];
+            break;
+        case 'left':
+            [x, y] = [-cellSize, 0];
+            break;
+    }
+    for (const child of children) {
+        let path = movePath(child.getAttribute('d'), x, y);
+        child.setAttribute('d', path);
+    }
+}
+
+function rotatePart(part) {
+    let children;
+    if (part.type === 'head') {
+        children = part.element.children[0].children;
+    } else {
+        children = part.element.children;
+    }
+    for (const child of children) {
+        let path = rotatePath(child.getAttribute('d'));
+        console.log(path);
+        child.setAttribute('d', path);
+    }
+}
+
+let newPart = function (type, direction) {
+    let element;
+    switch (type) {
+        case 'head':
+            element = headSVG.cloneNode(true);
+            break;
+        case 'body':
+            element = bodyStraightSVG.cloneNode(true);
+            break;
+        case 'bodyC':
+            element = bodyCurveSVG.cloneNode(true);
+            break;
+        case 'tail':
+            element = tailSVG.cloneNode(true);
+    }
+    return {
+        element: element,
+        type,
+        direction,
+    };
+};
+
+let snake = [];
+snake.push(newPart('head', 'right'));
+rotatePart(snake.at(-1));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'down');
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+snake.push(newPart('bodyC', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.push(newPart('tail', 'right'));
+
+snake.forEach(function (part) {
+    document.body.appendChild(part.element);
+});
