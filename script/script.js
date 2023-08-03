@@ -287,10 +287,32 @@ snake.forEach(function (part) {
     document.body.appendChild(part.element);
 });
 
-let directions = ['right', 'down', 'down', 'down', 'right', 'right', 'right'], direction;
+let direction = 'right';
 document.addEventListener('click', function () {
-    direction = directions[0];
-    directions.shift();
     moveSnake();
 });
 
+document.addEventListener('keydown', function (event) {
+    keyPressed(event.key);
+});
+
+function keyPressed(key) {
+    switch (key) {
+        case 'ArrowUp':
+        case 'w':
+            direction = 'up';
+            break;
+        case 'ArrowRight':
+        case 'd':
+            direction = 'right';
+            break;
+        case 'ArrowDown':
+        case 's':
+            direction = 'down';
+            break;
+        case 'ArrowLeft':
+        case 'a':
+            direction = 'left';
+            break;
+    }
+}
