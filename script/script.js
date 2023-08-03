@@ -1,7 +1,6 @@
 const cellSize = 40;
 
 const tailPathD = 'M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 40 30';
-
 // snake tail
 const tailSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 tailSVG.setAttribute('class', 'part');
@@ -14,7 +13,6 @@ tailSVG.appendChild(tailPath);
 
 const bodyCurvedD = 'M 0 30 C 0 25 0 15 0 10 C 15 10 30 25 30 40 C 25 40 15 40 10 40 C 10 35 5 30 0 30';
 const bodyCurvedStrokeD = 'M 0 10 C 15 10 30 25 30 40 M 10 40 C 10 35 5 30 0 30';
-
 // snake body curved
 const bodyCurveSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 bodyCurveSVG.setAttribute('class', 'part');
@@ -31,7 +29,6 @@ bodyCurveSVG.appendChild(bodyCurvePathStroke);
 
 const bodyStraightD = 'M 0 30 C 0 25 0 15 0 10 C 5 10 35 10 40 10 C 40 15 40 25 40 30 C 35 30 5 30 0 30';
 const bodyStraightStrokeD = 'M 0 10 C 5 10 35 10 40 10 M 40 30 C 35 30 5 30 0 30';
-
 // snake body straight
 const bodyStraightSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 bodyStraightSVG.setAttribute('class', 'part');
@@ -46,12 +43,11 @@ bodyStraightPathStroke.setAttribute('stroke', 'black');
 bodyStraightSVG.appendChild(bodyStraightPath);
 bodyStraightSVG.appendChild(bodyStraightPathStroke);
 
-// snake head
 const headMainD = 'M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10';
 const headNoseD = 'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22';
 const headEyesD = 'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30';
 const headEyesClosedD = 'M 15 10 C 18 10 18 13 15 13 C 18 13 18 10 15 10 M 15 30 C 18 30 18 27 15 27 C 18 27 18 30 15 30';
-
+// snake head
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
 headSVG.style.position = 'absolute';
@@ -81,6 +77,12 @@ headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
+/**
+ * rotate a svg path by 90 degrees clockwise or counter-clockwise
+ * @param svgPath {string} the svg path that (for now) only consists of 'M' and 'C'
+ * @param clockwise {boolean} whether to rotate it clockwise or counter-clockwise
+ * @return {string} the rotated path
+ */
 function rotatePath(svgPath, clockwise) {
     const parts = svgPath.trim().replace(/  +/, ' ').split(/(?=[MC])/);
     let rotatedPath = '';
@@ -108,6 +110,11 @@ function rotatePath(svgPath, clockwise) {
     return rotatedPath.trim().replace(/  +/, ' ');
 }
 
+/**
+ * moves the snake part by one cell in the direction specified
+ * @param part
+ * @param direction {string} up/down/left/right
+ */
 function movePart(part, direction) {
     let x, y;
     switch (direction) {
@@ -130,6 +137,11 @@ function movePart(part, direction) {
     part.element.style.top = part.y + 'px';
 }
 
+/**
+ * rotates the snake part clockwise or counter-clockwise
+ * @param part the snake part object to be rotated
+ * @param clockwise {boolean} whether to rotate it clockwise or counter-clockwise
+ */
 function rotatePart(part, clockwise) {
     let children;
     if (part.type === 'head') {
@@ -150,6 +162,12 @@ function rotatePart(part, clockwise) {
     }
 }
 
+/**
+ * the object factory for creating new snake parts
+ * @param type {string} head/body/tail
+ * @param direction {string} the direction that new part should be facing up/down/left/right
+ * @return {{x: number, y: number, type, element: Node, direction}}
+ */
 let newPart = function (type, direction) {
     let element;
     switch (type) {
@@ -174,6 +192,9 @@ let newPart = function (type, direction) {
     };
 };
 
+/**
+ * the function to move the whole snake to the direction that the user is pointing it to
+ */
 function moveSnake() {
     let pastDirections = [];
     for (const part of snake) {
@@ -197,6 +218,28 @@ function moveSnake() {
             movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = pastDirections[i - 1];
         }
+    }
+}
+
+/**
+ * checks if rotation should be clockwise or counter-clockwise based on the current and previous directions
+ * @param previous {string} previous direction of the said part
+ * @param current {string} current direction of the said part
+ * @return {boolean}
+ */
+function isClockwise(previous, current) {
+    if (previous === 'up' && current === 'right' ||
+        previous === 'right' && current === 'down' ||
+        previous === 'down' && current === 'left' ||
+        previous === 'left' && current === 'up') {
+        return true
+    } else if (previous === 'up' && current === 'left' ||
+        previous === 'right' && current === 'up' ||
+        previous === 'down' && current === 'right' ||
+        previous === 'left' && current === 'down') {
+        return false
+    } else {
+        console.log('error: check rotate called on not rotating part')
     }
 }
 
