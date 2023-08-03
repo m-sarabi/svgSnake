@@ -50,6 +50,7 @@ bodyStraightSVG.appendChild(bodyStraightPathStroke);
 const headMainD = 'M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10';
 const headNoseD = 'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22';
 const headEyesD = 'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30';
+const headEyesClosedD = 'M 15 10 C 18 10 18 13 15 13 C 18 13 18 10 15 10 M 15 30 C 18 30 18 27 15 27 C 18 27 18 30 15 30';
 
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
@@ -68,23 +69,20 @@ const headEyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 headEyes.setAttribute('d', headEyesD);
 headEyes.setAttribute('fill', 'white');
 headEyes.setAttribute('stroke', 'black');
-// const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-// eyesAnimate.setAttribute('attributeName', 'd');
-// eyesAnimate.setAttribute('values', 'M 30 20 C 35 20 35 25 30 25 C 26 25 26 20 30 20 M 30 60 C 35 60 35 55 30 55 C 26 55 26 60 30 60;' +
-//     'M 30 20 C 35 20 35 25 30 25 C 26 25 26 20 30 20 M 30 60 C 35 60 35 55 30 55 C 26 55 26 60 30 60;' +
-//     'M 30 20 C 35 20 35 25 30 25 C 35 25 35 20 30 20 M 30 60 C 35 60 35 55 30 55 C 35 55 35 60 30 60;' +
-//     'M 30 20 C 35 20 35 25 30 25 C 26 25 26 20 30 20 M 30 60 C 35 60 35 55 30 55 C 26 55 26 60 30 60');
-// eyesAnimate.setAttribute('keyTimes', '0;0.7;0.85;1');
-// eyesAnimate.setAttribute('dur', '5s');
-// eyesAnimate.setAttribute('repeatCount', 'indefinite');
-// headEyes.appendChild(eyesAnimate);
+const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+eyesAnimate.setAttribute('attributeName', 'd');
+eyesAnimate.setAttribute('values', headEyesD + ';' + headEyesD + ';' + headEyesClosedD + ';' + headEyesD);
+eyesAnimate.setAttribute('keyTimes', '0;0.7;0.85;1');
+eyesAnimate.setAttribute('dur', '5s');
+eyesAnimate.setAttribute('repeatCount', 'indefinite');
+headEyes.appendChild(eyesAnimate);
 headGroup.appendChild(headMain);
 headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
 function rotatePath(svgPath) {
-    const parts = svgPath.split(/(?=[MC])/);
+    const parts = svgPath.trim().replace(/  +/, ' ').split(/(?=[MC])/);
     let rotatedPath = '';
     for (const part of parts) {
         const type = part[0];
@@ -98,23 +96,6 @@ function rotatePath(svgPath) {
         }
     }
     return rotatedPath.trim().replace(/  +/, ' ');
-}
-
-function movePath(svgPath, x, y) {
-    const parts = svgPath.split(/(?=[MC])/);
-    let translatedPath = '';
-    for (const part of parts) {
-        const type = part[0];
-        const coords = part.slice(1).trim().split(/\s+/);
-        switch (type) {
-            case 'M':
-                translatedPath += `${type} ${parseFloat(coords[0]) + x} ${parseFloat(coords[1]) + y} `;
-                break;
-            case 'C':
-                translatedPath += `${type} ${parseFloat(coords[0]) + x} ${parseFloat(coords[1]) + y} ${parseFloat(coords[2]) + x} ${parseFloat(coords[3]) + y} ${parseFloat(coords[4]) + x} ${parseFloat(coords[5]) + y}     `;
-        }
-    }
-    return translatedPath.trim().replace(/  +/, ' ');
 }
 
 function movePart(part, direction) {
@@ -142,12 +123,18 @@ function rotatePart(part) {
     let children;
     if (part.type === 'head') {
         children = part.element.children[0].children;
+        let childAnim = children[2].children[0];
+        let animPaths = childAnim.getAttribute('values').split(';');
+        for (let i = 0; i < animPaths.length; i++) {
+            animPaths[i] = rotatePath(animPaths[i]);
+        }
+        childAnim = animPaths.join(';');
+        children[2].children[0].setAttribute('values', childAnim);
     } else {
         children = part.element.children;
     }
     for (const child of children) {
         let path = rotatePath(child.getAttribute('d'));
-        console.log(path);
         child.setAttribute('d', path);
     }
 }
@@ -191,7 +178,7 @@ function moveSnake() {
             children[1].setAttribute('d', bodyCurvedStrokeD);
             movePart(snake.at(i), 'right');
             snake.at(i).direction = snake.at(i - 1).direction;
-        } else  {
+        } else {
             movePart(snake.at(i), snake.at(i - 1).direction);
         }
     }
