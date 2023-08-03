@@ -4,6 +4,7 @@ const tailPathD = 'M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 4
 
 // snake tail
 const tailSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+tailSVG.setAttribute('class', 'part');
 tailSVG.style.position = 'absolute';
 const tailPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 tailPath.setAttribute('d', tailPathD);
@@ -16,6 +17,7 @@ const bodyCurvedStrokeD = 'M 0 10 C 15 10 30 25 30 40 M 10 40 C 10 35 5 30 0 30'
 
 // snake body curved
 const bodyCurveSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+bodyCurveSVG.setAttribute('class', 'part');
 bodyCurveSVG.style.position = 'absolute';
 const bodyCurvePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 bodyCurvePath.setAttribute('d', bodyCurvedD);
@@ -32,6 +34,7 @@ const bodyStraightStrokeD = 'M 0 10 C 5 10 35 10 40 10 M 40 30 C 35 30 5 30 0 30
 
 // snake body straight
 const bodyStraightSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+bodyStraightSVG.setAttribute('class', 'part');
 bodyStraightSVG.style.position = 'absolute';
 const bodyStraightPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 bodyStraightPath.setAttribute('d', bodyStraightD);
@@ -49,6 +52,7 @@ const headNoseD = 'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22';
 const headEyesD = 'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30';
 
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+headSVG.setAttribute('class', 'part');
 headSVG.style.position = 'absolute';
 const headGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 const headMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -78,8 +82,6 @@ headGroup.appendChild(headMain);
 headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
-
-// document.body.appendChild(headSVG);
 
 function rotatePath(svgPath) {
     const parts = svgPath.split(/(?=[MC])/);
@@ -116,12 +118,6 @@ function movePath(svgPath, x, y) {
 }
 
 function movePart(part, direction) {
-    let children;
-    if (part.type === 'head') {
-        children = part.element.children[0].children;
-    } else {
-        children = part.element.children;
-    }
     let x, y;
     switch (direction) {
         case 'up':
@@ -137,10 +133,9 @@ function movePart(part, direction) {
             [x, y] = [-cellSize, 0];
             break;
     }
-    for (const child of children) {
-        let path = movePath(child.getAttribute('d'), x, y);
-        child.setAttribute('d', path);
-    }
+    part.x += x;
+    part.y += y;
+    part.element.style.transform = `translate(${part.x}px, ${part.y}px)`;
 }
 
 function rotatePart(part) {
@@ -176,22 +171,45 @@ let newPart = function (type, direction) {
         element: element,
         type,
         direction,
+        x: 0,
+        y: 0,
     };
 };
 
+function moveSnake() {
+    if (direction === snake.at(0).direction) {
+        movePart(snake.at(0), direction);
+    } else if (direction === 'down' && snake.at(0).direction === 'right') {
+        rotatePart(snake.at(0));
+        movePart(snake.at(0), direction);
+        snake.at(0).direction = direction;
+    }
+    for (let i = snake.length - 1; i > 0; i--) {
+        if (snake.at(i).type === 'body' && snake.at(i).direction !== snake.at(i - 1).direction) {
+            let children = snake.at(i).element.children;
+            children[0].setAttribute('d', bodyCurvedD);
+            children[1].setAttribute('d', bodyCurvedStrokeD);
+            movePart(snake.at(i), 'right');
+            snake.at(i).direction = snake.at(i - 1).direction;
+        } else  {
+            movePart(snake.at(i), snake.at(i - 1).direction);
+        }
+    }
+}
+
 let snake = [];
 snake.push(newPart('head', 'right'));
-rotatePart(snake.at(-1));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'down');
 snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-snake.push(newPart('bodyC', 'right'));
-movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
 snake.push(newPart('tail', 'right'));
 
 snake.forEach(function (part) {
     document.body.appendChild(part.element);
+});
+
+let direction = 'down';
+document.addEventListener('click', function () {
+    moveSnake();
 });
