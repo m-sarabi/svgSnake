@@ -236,7 +236,6 @@ function moveSnake() {
                 rotatePart(snake.at(i), true);
             }
         } else if (snake.at(i).type === 'bodyC') {
-            console.log([snake.at(i).direction, pastDirections[i - 1], snake.at(i - 1).direction].join(','));
             switch ([snake.at(i).direction, pastDirections[i - 1], snake.at(i - 1).direction].join(',')) {
                 case 'right,down,left':
                 case 'down,left,up':
