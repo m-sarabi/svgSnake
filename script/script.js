@@ -212,7 +212,6 @@ function moveSnake() {
             let children = snake.at(i).element.children;
             children[0].setAttribute('d', bodyCurvedD);
             children[1].setAttribute('d', bodyCurvedStrokeD);
-            console.log([snake.at(i - 1).direction, snake.at(i).direction]);
             switch ([snake.at(i - 1).direction, snake.at(i).direction].join(',')) {
                 case 'up,right':
                 case 'left,down':
@@ -220,7 +219,6 @@ function moveSnake() {
                     break;
                 case 'up,left':
                 case 'right,down':
-                    console.log('this should trigger');
                     rotatePart(snake.at(i), false);
                     rotatePart(snake.at(i), false);
                     break;
@@ -229,8 +227,6 @@ function moveSnake() {
                     rotatePart(snake.at(i), false);
                     break;
             }
-            movePart(snake.at(i), pastDirections[i - 1]);
-            snake.at(i).direction = pastDirections[i - 1];
         } else if (snake.at(i).type === 'bodyC' && pastDirections[i - 1] === snake.at(i - 1).direction) {
             snake.at(i).type = 'body';
             let children = snake.at(i).element.children;
@@ -239,15 +235,32 @@ function moveSnake() {
             if (['up', 'down'].includes(snake.at(i - 1).direction)) {
                 rotatePart(snake.at(i), true);
             }
-            movePart(snake.at(i), pastDirections[i - 1]);
-            snake.at(i).direction = pastDirections[i - 1];
+        } else if (snake.at(i).type === 'bodyC') {
+            console.log([snake.at(i).direction, pastDirections[i - 1], snake.at(i - 1).direction].join(','));
+            switch ([snake.at(i).direction, pastDirections[i - 1], snake.at(i - 1).direction].join(',')) {
+                case 'right,down,left':
+                case 'down,left,up':
+                case 'left,up,right':
+                case 'up,right,down':
+                    rotatePart(snake.at(i), true);
+                    break;
+                case 'up,left,down':
+                case 'right,up,left':
+                case 'down,right,up':
+                case 'left,down,right':
+                    rotatePart(snake.at(i), false);
+                    break;
+                default:
+                    rotatePart(snake.at(i), false);
+                    rotatePart(snake.at(i), false);
+            }
         } else {
             if (pastDirections[i - 1] !== snake.at(i - 1).direction) {
                 rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], snake.at(i - 1).direction));
             }
-            movePart(snake.at(i), pastDirections[i - 1]);
-            snake.at(i).direction = pastDirections[i - 1];
         }
+        movePart(snake.at(i), pastDirections[i - 1]);
+        snake.at(i).direction = pastDirections[i - 1];
     }
 }
 
