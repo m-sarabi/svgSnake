@@ -116,7 +116,8 @@ function movePart(part, direction) {
     }
     part.x += x;
     part.y += y;
-    part.element.style.transform = `translate(${part.x}px, ${part.y}px)`;
+    part.element.style.left = part.x + 'px';
+    part.element.style.top = part.y + 'px';
 }
 
 function rotatePart(part) {
@@ -191,6 +192,8 @@ movePart(snake.at(-1), 'right');
 snake.push(newPart('body', 'right'));
 movePart(snake.at(-1), 'right');
 snake.push(newPart('tail', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'left');
 
 snake.forEach(function (part) {
     document.body.appendChild(part.element);
