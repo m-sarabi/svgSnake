@@ -200,21 +200,51 @@ function moveSnake() {
     for (const part of snake) {
         pastDirections.push(part.direction);
     }
-    if (direction === snake.at(0).direction) {
-        movePart(snake.at(0), direction);
-    } else if (direction === 'down' && snake.at(0).direction === 'right') {
-        rotatePart(snake.at(0), true);
-        movePart(snake.at(0), direction);
-        snake.at(0).direction = direction;
+    if (direction !== snake.at(0).direction) {
+        rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
     }
+    movePart(snake.at(0), direction);
+    snake.at(0).direction = direction;
+
     for (let i = 1; i < snake.length; i++) {
-        if (snake.at(i).type === 'body' && snake.at(i).direction !== snake.at(i - 1).direction) {
+        if (snake.at(i).type === 'body' && pastDirections[i - 1] !== snake.at(i - 1).direction) {
+            snake.at(i).type = 'bodyC';
             let children = snake.at(i).element.children;
             children[0].setAttribute('d', bodyCurvedD);
             children[1].setAttribute('d', bodyCurvedStrokeD);
+            console.log([snake.at(i - 1).direction, snake.at(i).direction]);
+            switch ([snake.at(i - 1).direction, snake.at(i).direction].join(',')) {
+                case 'up,right':
+                case 'left,down':
+                    rotatePart(snake.at(i), true);
+                    break;
+                case 'up,left':
+                case 'right,down':
+                    console.log('this should trigger');
+                    rotatePart(snake.at(i), false);
+                    rotatePart(snake.at(i), false);
+                    break;
+                case 'down,left':
+                case 'right,up':
+                    rotatePart(snake.at(i), false);
+                    break;
+            }
+            movePart(snake.at(i), pastDirections[i - 1]);
+            snake.at(i).direction = pastDirections[i - 1];
+        } else if (snake.at(i).type === 'bodyC' && pastDirections[i - 1] === snake.at(i - 1).direction) {
+            snake.at(i).type = 'body';
+            let children = snake.at(i).element.children;
+            children[0].setAttribute('d', bodyStraightD);
+            children[1].setAttribute('d', bodyStraightStrokeD);
+            if (['up', 'down'].includes(snake.at(i - 1).direction)) {
+                rotatePart(snake.at(i), true);
+            }
             movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = pastDirections[i - 1];
         } else {
+            if (pastDirections[i - 1] !== snake.at(i - 1).direction) {
+                rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], snake.at(i - 1).direction));
+            }
             movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = pastDirections[i - 1];
         }
@@ -232,14 +262,14 @@ function isClockwise(previous, current) {
         previous === 'right' && current === 'down' ||
         previous === 'down' && current === 'left' ||
         previous === 'left' && current === 'up') {
-        return true
+        return true;
     } else if (previous === 'up' && current === 'left' ||
         previous === 'right' && current === 'up' ||
         previous === 'down' && current === 'right' ||
         previous === 'left' && current === 'down') {
-        return false
+        return false;
     } else {
-        console.log('error: check rotate called on not rotating part')
+        console.error('error: check rotate called on not rotating part');
     }
 }
 
@@ -257,7 +287,10 @@ snake.forEach(function (part) {
     document.body.appendChild(part.element);
 });
 
-let direction = 'down';
+let directions = ['right', 'down', 'down', 'down', 'right', 'right', 'right'], direction;
 document.addEventListener('click', function () {
+    direction = directions[0];
+    directions.shift();
     moveSnake();
 });
+
