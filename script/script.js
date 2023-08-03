@@ -192,9 +192,10 @@ function moveSnake() {
             children[0].setAttribute('d', bodyCurvedD);
             children[1].setAttribute('d', bodyCurvedStrokeD);
             movePart(snake.at(i), pastDirections[i - 1]);
-            snake.at(i).direction = snake.at(i - 1).direction;
+            snake.at(i).direction = pastDirections[i - 1];
         } else {
             movePart(snake.at(i), pastDirections[i - 1]);
+            snake.at(i).direction = pastDirections[i - 1];
         }
     }
 }
