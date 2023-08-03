@@ -81,18 +81,28 @@ headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
-function rotatePath(svgPath) {
+function rotatePath(svgPath, clockwise) {
     const parts = svgPath.trim().replace(/  +/, ' ').split(/(?=[MC])/);
     let rotatedPath = '';
     for (const part of parts) {
         const type = part[0];
         const coords = part.slice(1).trim().split(/\s+/);
-        switch (type) {
-            case 'M':
-                rotatedPath += `${type} ${-parseFloat(coords[1]) + cellSize} ${parseFloat(coords[0])} `;
-                break;
-            case 'C':
-                rotatedPath += `${type} ${-parseFloat(coords[1]) + cellSize} ${parseFloat(coords[0])} ${-parseFloat(coords[3]) + cellSize} ${parseFloat(coords[2])} ${-parseFloat(coords[5]) + cellSize} ${parseFloat(coords[4])}     `;
+        if (clockwise) {
+            switch (type) {
+                case 'M':
+                    rotatedPath += `${type} ${-parseFloat(coords[1]) + cellSize} ${parseFloat(coords[0])} `;
+                    break;
+                case 'C':
+                    rotatedPath += `${type} ${-parseFloat(coords[1]) + cellSize} ${parseFloat(coords[0])} ${-parseFloat(coords[3]) + cellSize} ${parseFloat(coords[2])} ${-parseFloat(coords[5]) + cellSize} ${parseFloat(coords[4])}     `;
+            }
+        } else {
+            switch (type) {
+                case 'M':
+                    rotatedPath += `${type} ${parseFloat(coords[1])} ${-parseFloat(coords[0]) + cellSize} `;
+                    break;
+                case 'C':
+                    rotatedPath += `${type} ${parseFloat(coords[1])} ${-parseFloat(coords[0]) + cellSize} ${parseFloat(coords[3])} ${-parseFloat(coords[2]) + cellSize} ${parseFloat(coords[5])} ${-parseFloat(coords[4]) + cellSize}     `;
+            }
         }
     }
     return rotatedPath.trim().replace(/  +/, ' ');
@@ -120,14 +130,14 @@ function movePart(part, direction) {
     part.element.style.top = part.y + 'px';
 }
 
-function rotatePart(part) {
+function rotatePart(part, clockwise) {
     let children;
     if (part.type === 'head') {
         children = part.element.children[0].children;
         let childAnim = children[2].children[0];
         let animPaths = childAnim.getAttribute('values').split(';');
         for (let i = 0; i < animPaths.length; i++) {
-            animPaths[i] = rotatePath(animPaths[i]);
+            animPaths[i] = rotatePath(animPaths[i], clockwise);
         }
         childAnim = animPaths.join(';');
         children[2].children[0].setAttribute('values', childAnim);
@@ -135,7 +145,7 @@ function rotatePart(part) {
         children = part.element.children;
     }
     for (const child of children) {
-        let path = rotatePath(child.getAttribute('d'));
+        let path = rotatePath(child.getAttribute('d'), clockwise);
         child.setAttribute('d', path);
     }
 }
@@ -165,22 +175,26 @@ let newPart = function (type, direction) {
 };
 
 function moveSnake() {
+    let pastDirections = [];
+    for (const part of snake) {
+        pastDirections.push(part.direction);
+    }
     if (direction === snake.at(0).direction) {
         movePart(snake.at(0), direction);
     } else if (direction === 'down' && snake.at(0).direction === 'right') {
-        rotatePart(snake.at(0));
+        rotatePart(snake.at(0), true);
         movePart(snake.at(0), direction);
         snake.at(0).direction = direction;
     }
-    for (let i = snake.length - 1; i > 0; i--) {
+    for (let i = 1; i < snake.length; i++) {
         if (snake.at(i).type === 'body' && snake.at(i).direction !== snake.at(i - 1).direction) {
             let children = snake.at(i).element.children;
             children[0].setAttribute('d', bodyCurvedD);
             children[1].setAttribute('d', bodyCurvedStrokeD);
-            movePart(snake.at(i), 'right');
+            movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = snake.at(i - 1).direction;
         } else {
-            movePart(snake.at(i), snake.at(i - 1).direction);
+            movePart(snake.at(i), pastDirections[i - 1]);
         }
     }
 }
