@@ -323,31 +323,31 @@ document.addEventListener('click', function () {
 });
 
 document.addEventListener('keydown', function (event) {
-    keyPressed(event.key);
+    keyPressed(event.code);
 });
 
 function keyPressed(key) {
     switch (key) {
         case 'ArrowUp':
-        case 'w':
+        case 'KeyW':
             if (snake.at(0).direction !== 'down') {
                 direction = 'up';
             }
             break;
         case 'ArrowRight':
-        case 'd':
+        case 'KeyD':
             if (snake.at(0).direction !== 'left') {
                 direction = 'right';
             }
             break;
         case 'ArrowDown':
-        case 's':
+        case 'KeyS':
             if (snake.at(0).direction !== 'up') {
                 direction = 'down';
             }
             break;
         case 'ArrowLeft':
-        case 'a':
+        case 'KeyA':
             if (snake.at(0).direction !== 'right') {
                 direction = 'left';
             }
