@@ -331,4 +331,5 @@ function keyPressed(key) {
 
 /*
 todo: find a way to transit from curve to straight smoothly, and a way to smooth transit 180 degree curve rotations
+todo: and a way to transit smoothly for straight to curve ccw
 */
