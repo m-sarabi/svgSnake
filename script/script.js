@@ -289,6 +289,10 @@ let snake = [];
 snake.push(newPart('head', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
 snake.push(newPart('body', 'right'));
 movePart(snake.at(-1), 'right');
 snake.push(newPart('tail', 'right'));
@@ -300,8 +304,22 @@ snake.forEach(function (part) {
 });
 
 let direction = 'right';
+
+let count = 0, start = false;
+
+function animate() {
+    if (++count > 25) {
+        moveSnake();
+        count = 0;
+    }
+    requestAnimationFrame(animate);
+}
+
 document.addEventListener('click', function () {
-    moveSnake();
+    if (!start) {
+        requestAnimationFrame(animate);
+        start = true;
+    }
 });
 
 document.addEventListener('keydown', function (event) {
@@ -312,24 +330,27 @@ function keyPressed(key) {
     switch (key) {
         case 'ArrowUp':
         case 'w':
-            direction = 'up';
+            if (snake.at(0).direction !== 'down') {
+                direction = 'up';
+            }
             break;
         case 'ArrowRight':
         case 'd':
-            direction = 'right';
+            if (snake.at(0).direction !== 'left') {
+                direction = 'right';
+            }
             break;
         case 'ArrowDown':
         case 's':
-            direction = 'down';
+            if (snake.at(0).direction !== 'up') {
+                direction = 'down';
+            }
             break;
         case 'ArrowLeft':
         case 'a':
-            direction = 'left';
+            if (snake.at(0).direction !== 'right') {
+                direction = 'left';
+            }
             break;
     }
 }
-
-/*
-todo: find a way to transit from curve to straight smoothly, and a way to smooth transit 180 degree curve rotations
-todo: and a way to transit smoothly for straight to curve ccw
-*/
