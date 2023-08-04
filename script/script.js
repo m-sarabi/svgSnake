@@ -328,3 +328,7 @@ function keyPressed(key) {
             break;
     }
 }
+
+/*
+todo: find a way to transit from curve to straight smoothly, and a way to smooth transit 180 degree curve rotations
+*/
