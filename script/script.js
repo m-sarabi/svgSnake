@@ -258,6 +258,15 @@ function moveSnake() {
     }
 }
 
+function selfCollide() {
+    for (let i = 1; i < snake.length; i++) {
+        if (snake.at(0).x === snake.at(i).x && snake.at(0).y === snake.at(i).y) {
+            console.log('game over');
+            start = false;
+        }
+    }
+}
+
 /**
  * checks if rotation should be clockwise or counter-clockwise based on the current and previous directions
  * @param previous {string} previous direction of the said part
@@ -286,6 +295,7 @@ movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
+snake.at(0).element.style.zIndex = '10';
 snake.push(newPart('body', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
@@ -311,6 +321,7 @@ function animate() {
     count++;
     if (count >= 30) {
         moveSnake();
+        selfCollide();
         count = 0;
     }
     if (start) {
