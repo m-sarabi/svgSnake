@@ -1,6 +1,7 @@
 .part * {
     transition: 500ms linear;
 }
+
 .part {
     transition: 500ms linear;
 }
@@ -8,4 +9,16 @@
 .part {
     width: 40px;
     height: 40px;
+}
+
+#how-to {
+    user-select: none;
+    opacity: 0.5;
+    position: absolute;
+    bottom: 1%;
+    left: 1%;
+}
+
+#how-to > div {
+    font-size: 18px;
 }
