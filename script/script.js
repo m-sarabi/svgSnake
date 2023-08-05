@@ -285,6 +285,11 @@ snake.push(newPart('head', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
 snake.push(newPart('body', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
@@ -314,11 +319,7 @@ function animate() {
 }
 
 document.addEventListener('click', function () {
-    if (!start) {
-        requestAnimationFrame(animate);
-        start = true;
-    }
-    // moveSnake();
+    moveSnake();
 });
 
 document.addEventListener('keydown', function (event) {
@@ -353,7 +354,10 @@ function keyPressed(key) {
             }
             break;
         case 'Space':
-            start = false;
+            if (!start) {
+                requestAnimationFrame(animate);
+            }
+            start = !start;
             break;
     }
 }
