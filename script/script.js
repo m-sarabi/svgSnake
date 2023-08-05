@@ -308,7 +308,9 @@ function animate() {
         moveSnake();
         count = 0;
     }
-    requestAnimationFrame(animate);
+    if (start) {
+        requestAnimationFrame(animate);
+    }
 }
 
 document.addEventListener('click', function () {
@@ -320,6 +322,7 @@ document.addEventListener('click', function () {
 });
 
 document.addEventListener('keydown', function (event) {
+    // console.log(event.code);
     keyPressed(event.code);
 });
 
@@ -348,6 +351,9 @@ function keyPressed(key) {
             if (snake.at(0).direction !== 'right') {
                 direction = 'left';
             }
+            break;
+        case 'Space':
+            start = false;
             break;
     }
 }
