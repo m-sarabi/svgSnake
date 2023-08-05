@@ -1,4 +1,5 @@
 const cellSize = 40;
+const speed = 250;
 
 const tailPathD = 'M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 40 30';
 // snake tail
@@ -319,7 +320,7 @@ let count = 0, start = false;
 
 function animate() {
     count++;
-    if (count >= 30) {
+    if (count >= (speed * 30 / 500)) {
         moveSnake();
         selfCollide();
         count = 0;
@@ -372,3 +373,8 @@ function keyPressed(key) {
             break;
     }
 }
+
+let style = document.styleSheets[0];
+let rules = style.cssRules;
+rules[0].style.transition = speed + 'ms linear';
+rules[1].style.transition = speed + 'ms linear';
