@@ -318,17 +318,7 @@ let direction = 'right';
 
 let count = 0, start = false;
 
-function animate() {
-    count++;
-    if (count >= (speed * 30 / 500)) {
-        moveSnake();
-        selfCollide();
-        count = 0;
-    }
-    if (start) {
-        requestAnimationFrame(animate);
-    }
-}
+let startMoving;
 
 document.addEventListener('click', function () {
     moveSnake();
@@ -367,7 +357,15 @@ function keyPressed(key) {
             break;
         case 'Space':
             if (!start) {
-                requestAnimationFrame(animate);
+                startMoving = setInterval(function () {
+                    moveSnake();
+                    selfCollide();
+                    if (start === false) {
+                        clearInterval(startMoving);
+                    }
+                }, speed);
+            } else {
+                clearInterval(startMoving);
             }
             start = !start;
             break;
