@@ -104,6 +104,23 @@ headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
+const ApplePathD = ['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
+    'M 20 11 C 21 7 22 6 25 5 C 25 8 23 9 20 11'];
+// snake tail
+const appleSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+appleSVG.setAttribute('class', 'part');
+appleSVG.style.position = 'absolute';
+const applePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+applePath.setAttribute('d', ApplePathD[0]);
+applePath.setAttribute('fill', 'red');
+applePath.setAttribute('stroke', 'black');
+const leafPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+leafPath.setAttribute('d', ApplePathD[0]);
+leafPath.setAttribute('fill', 'green');
+leafPath.setAttribute('stroke', 'black');
+appleSVG.appendChild(applePath);
+appleSVG.appendChild(leafPath);
+
 /**
  * rotate a svg path by 90 degrees clockwise or counter-clockwise
  * @param svgPath {string} the svg path that (for now) only consists of 'M' and 'C'
