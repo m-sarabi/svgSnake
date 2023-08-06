@@ -236,7 +236,7 @@ let newPart = function (type, direction) {
     };
 };
 
-let foodFactory = function (type, x, y) {
+let newFood = function (type, x, y) {
     return {
         type,
         x,
@@ -376,7 +376,7 @@ rules[0].style.transition = speed + 'ms linear';
 rules[1].style.transition = speed + 'ms linear';
 
 let snake = [];
-let food = [];
+let foods = [];
 
 snake.push(newPart('head', 'right'));
 movePart(snake.at(-1), 'right');
