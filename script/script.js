@@ -212,9 +212,12 @@ function rotatePart(part, clockwise) {
  * the object factory for creating new snake parts
  * @param type {string} head/body/tail
  * @param direction {string} the direction that new part should be facing up/down/left/right
+ * @param x {number}
+ * @param y {number}
+ * @param scale {number}
  * @return {{x: number, y: number, type, element: Node, direction}}
  */
-let newPart = function (type, direction) {
+let newPart = function (type, direction, x = 0, y = 0, scale = 1) {
     let element;
     switch (type) {
         case 'head':
@@ -229,12 +232,15 @@ let newPart = function (type, direction) {
         case 'tail':
             element = tailSVG.cloneNode(true);
     }
+    absoluteMove(element, x, y);
+    element.style.scale = scale.toString();
+    document.body.appendChild(element);
     return {
         element: element,
         type,
         direction,
-        x: 0,
-        y: 0,
+        x,
+        y,
     };
 };
 
