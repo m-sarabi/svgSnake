@@ -237,11 +237,23 @@ let newPart = function (type, direction) {
 };
 
 let newFood = function (type, x, y) {
+    let element;
+    switch (type) {
+        case 'apple':
+            element = appleSVG.cloneNode(true);
+    }
+    absoluteMove(element, x, y);
     return {
+        element: element,
         type,
         x,
         y,
-    }
+    };
+};
+
+function absoluteMove(obj, x, y) {
+    obj.style.left = x + 'px';
+    obj.style.top = y + 'px';
 }
 
 /**
@@ -397,7 +409,13 @@ snake.push(newPart('tail', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'left');
 
+foods.push(newFood('apple', 120, 80));
+
 snake.forEach(function (part) {
+    document.body.appendChild(part.element);
+});
+
+foods.forEach(function (part) {
     document.body.appendChild(part.element);
 });
 
