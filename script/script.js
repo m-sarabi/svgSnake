@@ -251,6 +251,7 @@ let newFood = function (type, x, y) {
             element = appleSVG.cloneNode(true);
     }
     absoluteMove(element, x, y);
+    document.body.appendChild(element);
     return {
         element: element,
         type,
