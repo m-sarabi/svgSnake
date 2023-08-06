@@ -316,7 +316,7 @@ snake.forEach(function (part) {
 
 let direction = 'right';
 
-let count = 0, start = false;
+let start = false;
 
 let startMoving;
 
