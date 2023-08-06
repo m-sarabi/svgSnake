@@ -236,6 +236,14 @@ let newPart = function (type, direction) {
     };
 };
 
+let foodFactory = function (type, x, y) {
+    return {
+        type,
+        x,
+        y,
+    }
+}
+
 /**
  * the function to move the whole snake to the direction that the user is pointing it to
  */
@@ -368,6 +376,8 @@ rules[0].style.transition = speed + 'ms linear';
 rules[1].style.transition = speed + 'ms linear';
 
 let snake = [];
+let food = [];
+
 snake.push(newPart('head', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'right');
