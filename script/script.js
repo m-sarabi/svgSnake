@@ -304,30 +304,6 @@ function isClockwise(previous, current) {
     }
 }
 
-let snake = [];
-snake.push(newPart('head', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.at(0).element.style.zIndex = '10';
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-snake.push(newPart('tail', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'left');
-
-snake.forEach(function (part) {
-    document.body.appendChild(part.element);
-});
-
 let direction = 'right';
 
 let start = false;
@@ -390,3 +366,28 @@ let style = document.styleSheets[0];
 let rules = style.cssRules;
 rules[0].style.transition = speed + 'ms linear';
 rules[1].style.transition = speed + 'ms linear';
+
+let snake = [];
+snake.push(newPart('head', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.at(0).element.style.zIndex = '10';
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'right');
+snake.push(newPart('body', 'right'));
+movePart(snake.at(-1), 'right');
+snake.push(newPart('tail', 'right'));
+movePart(snake.at(-1), 'right');
+movePart(snake.at(-1), 'left');
+
+snake.forEach(function (part) {
+    document.body.appendChild(part.element);
+});
+
