@@ -315,20 +315,32 @@ function selfCollide() {
 }
 
 function eatFood() {
+    let ateFood = false;
     foods.forEach(function (food, i) {
         if (snake.at(0).x === food.x && snake.at(0).y === food.y) {
             food.element.style.transform = 'scale(0)';
-            foods.push(newFood('apple', Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize));
+            let foodPos, foodPosStr, count = 0, snakePos = [];
+            snake.forEach(function (part) {
+                snakePos.push([part.x, part.y].join('_'));
+            });
+            do {
+                count++;
+                foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize];
+                foodPosStr = foodPos.join('_');
+            } while (snakePos.includes(foodPosStr) && count <= 10);
+            foods.push(newFood('apple', foodPos[0], foodPos[1]));
             document.body.appendChild(foods.at(-1).element);
             setTimeout(function () {
                 foods.at(-1).element.style.transform = 'scale(1)';
-            }, 1);
+            }, 10);
             setTimeout(function () {
                 food.element.remove();
                 foods.splice(i, 1);
             }, speed * 0.9);
+            ateFood = true;
         }
     });
+    return ateFood;
 }
 
 /**
