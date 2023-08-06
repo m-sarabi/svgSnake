@@ -1,6 +1,9 @@
 const cellSize = 40;
 const speed = 250;
 
+// all the svg parts and shapes are built with only cubic bézier curves
+
+// snake parts in svg path
 const tailPathD = 'M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 40 30';
 // snake tail
 const tailSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -104,6 +107,7 @@ headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
+// foods as svg path
 const ApplePathD = ['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
     'M 20 11 C 21 7 22 6 25 5 C 25 8 23 9 20 11'];
 // snake tail
@@ -122,6 +126,33 @@ leafPath.setAttribute('fill', 'green');
 leafPath.setAttribute('stroke', 'black');
 appleSVG.appendChild(applePath);
 appleSVG.appendChild(leafPath);
+
+
+// obstacle svg elements
+const bladePathD = ['M 20 5 C 30 10 15 20 35 20 C 30 30 20 15 20 35 C 10 30 25 20 5 20 C 10 10 20 25 20 5',
+    'M 18 20 C 18 19 19 18 20 18 C 21 18 22 19 22 20 C 22 21 21 22 20 22 C 19 22 18 21 18 20'];
+// blade obstacle
+const bladeSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+bladeSVG.style.position = 'absolute';
+const bladePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+bladePath.setAttribute('d', bladePathD[0]);
+bladePath.setAttribute('fill', 'lightgray');
+bladePath.setAttribute('stroke', 'black');
+const bladeCenterPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+bladeCenterPath.setAttribute('d', bladePathD[1]);
+bladeCenterPath.setAttribute('fill', 'darkgray');
+bladeCenterPath.setAttribute('stroke', 'black');
+const bladeAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+bladeAnimate.setAttribute('attributeName', 'transform');
+bladeAnimate.setAttribute('attributeType', 'xml');
+bladeAnimate.setAttribute('type', 'rotate');
+bladeAnimate.setAttribute('from', '0 20 20');
+bladeAnimate.setAttribute('to', '360 20 20');
+bladeAnimate.setAttribute('dur', '2s');
+bladeAnimate.setAttribute('repeatCount', 'indefinite');
+bladePath.appendChild(bladeAnimate);
+bladeSVG.appendChild(bladePath);
+bladeSVG.appendChild(bladeCenterPath);
 
 /**
  * rotate a svg path by 90 degrees clockwise or counter-clockwise
