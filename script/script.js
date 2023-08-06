@@ -263,9 +263,6 @@ function moveSnake() {
             let straightDirection = snake.at(i - 1).direction;
             children[0].setAttribute('d', bodyStraightD[straightDirection][0]);
             children[1].setAttribute('d', bodyStraightD[straightDirection][1]);
-            // if (['up', 'down'].includes(snake.at(i - 1).direction)) {
-            //     rotatePart(snake.at(i), true);
-            // }
         } else {
             if (pastDirections[i - 1] !== snake.at(i - 1).direction) {
                 rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], snake.at(i - 1).direction));
