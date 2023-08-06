@@ -110,6 +110,8 @@ const ApplePathD = ['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 
 const appleSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 appleSVG.setAttribute('class', 'part');
 appleSVG.style.position = 'absolute';
+appleSVG.style.transition = 'all ' + (speed * 0.9) + 'ms';
+appleSVG.style.transform = 'scale(0)';
 const applePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 applePath.setAttribute('d', ApplePathD[0]);
 applePath.setAttribute('fill', 'red');
@@ -269,6 +271,9 @@ function moveSnake() {
     }
     movePart(snake.at(0), direction);
     snake.at(0).direction = direction;
+    console.log([snake.at(0).x, snake.at(0).y]);
+    console.log([foods.at(-1).x, foods.at(-1).y]);
+    eatFood();
 
     for (let i = 1; i < snake.length; i++) {
         if (['body', 'bodyC'].includes(snake.at(i).type) && pastDirections[i - 1] !== snake.at(i - 1).direction) {
@@ -300,6 +305,23 @@ function selfCollide() {
             start = false;
         }
     }
+}
+
+function eatFood() {
+    foods.forEach(function (food, i) {
+        if (snake.at(0).x === food.x && snake.at(0).y === food.y) {
+            food.element.style.transform = 'scale(0)';
+            foods.push(newFood('apple', Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize));
+            document.body.appendChild(foods.at(-1).element);
+            setTimeout(function () {
+                foods.at(-1).element.style.transform = 'scale(1)';
+            }, 1);
+            setTimeout(function () {
+                food.element.remove();
+                foods.splice(i, 1);
+            }, speed * 0.9);
+        }
+    });
 }
 
 /**
@@ -410,12 +432,16 @@ movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'left');
 
 foods.push(newFood('apple', 120, 80));
+setTimeout(function () {
+    foods.at(-1).element.style.transform = 'scale(1)';
+}, 1);
+
 
 snake.forEach(function (part) {
     document.body.appendChild(part.element);
 });
 
-foods.forEach(function (part) {
-    document.body.appendChild(part.element);
+foods.forEach(function (food) {
+    document.body.appendChild(food.element);
 });
 
