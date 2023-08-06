@@ -115,7 +115,7 @@ applePath.setAttribute('d', ApplePathD[0]);
 applePath.setAttribute('fill', 'red');
 applePath.setAttribute('stroke', 'black');
 const leafPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-leafPath.setAttribute('d', ApplePathD[0]);
+leafPath.setAttribute('d', ApplePathD[1]);
 leafPath.setAttribute('fill', 'green');
 leafPath.setAttribute('stroke', 'black');
 appleSVG.appendChild(applePath);
