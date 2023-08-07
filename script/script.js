@@ -115,7 +115,6 @@ const appleSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 appleSVG.setAttribute('class', 'part');
 appleSVG.style.position = 'absolute';
 appleSVG.style.transition = 'all ' + (speed * 0.9) + 'ms';
-appleSVG.style.transform = 'scale(0)';
 const applePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 applePath.setAttribute('d', ApplePathD[0]);
 applePath.setAttribute('fill', 'red');
@@ -333,6 +332,27 @@ function spawnBlade(type) {
     obstacles.push(newObstacle(type, x, y));
 }
 
+function spawnFood() {
+    let foodPos, foodPosStr, count = 0, snakePos = [], obstaclePos = [];
+    snake.forEach(function (part) {
+        snakePos.push([part.x, part.y].join('_'));
+    });
+    obstacles.forEach(function (part) {
+        obstaclePos.push([part.x, part.y].join('_'));
+    });
+    do {
+        count++;
+        foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize];
+        foodPosStr = foodPos.join('_');
+    } while (obstaclePos.includes(foodPosStr) || (snakePos.includes(foodPosStr) && count <= 20));
+    foods.push(newFood('apple', foodPos[0], foodPos[1]));
+    foods.at(-1).element.style.transform = 'scale(0)';
+    document.body.appendChild(foods.at(-1).element);
+    setTimeout(function () {
+        foods.at(-1).element.style.transform = 'scale(1)';
+    }, 10);
+}
+
 /**
  * the function to move the whole snake to the direction that the user is pointing it to
  */
@@ -398,23 +418,7 @@ function eatFood() {
     foods.forEach(function (food, i) {
         if (snake.at(0).x === food.x && snake.at(0).y === food.y) {
             food.element.style.transform = 'scale(0)';
-            let foodPos, foodPosStr, count = 0, snakePos = [], obstaclePos = [];
-            snake.forEach(function (part) {
-                snakePos.push([part.x, part.y].join('_'));
-            });
-            obstacles.forEach(function (part) {
-                obstaclePos.push([part.x, part.y].join('_'));
-            });
-            do {
-                count++;
-                foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize];
-                foodPosStr = foodPos.join('_');
-            } while (obstaclePos.includes(foodPosStr) || (snakePos.includes(foodPosStr) && count <= 20));
-            foods.push(newFood('apple', foodPos[0], foodPos[1]));
-            document.body.appendChild(foods.at(-1).element);
-            setTimeout(function () {
-                foods.at(-1).element.style.transform = 'scale(1)';
-            }, 10);
+            spawnFood();
             setTimeout(function () {
                 food.element.remove();
                 foods.splice(i, 1);
