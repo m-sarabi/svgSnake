@@ -330,7 +330,7 @@ function spawnBlade(type) {
         x = Math.floor(Math.random() * 10) * cellSize;
         y = Math.floor(Math.random() * 10) * cellSize;
     } while (snakePos.includes([x, y].join('_')) || foodPos.includes([x, y].join('_')) || obstaclePos.includes([x, y].join('_')));
-    obstacles.push(newObstacle('blade', x, y));
+    obstacles.push(newObstacle(type, x, y));
 }
 
 /**
@@ -378,6 +378,13 @@ function moveSnake() {
 function collision() {
     for (let i = 1; i < snake.length; i++) {
         if (snake.at(0).x === snake.at(i).x && snake.at(0).y === snake.at(i).y) {
+            console.log('game over');
+            start = false;
+            return true;
+        }
+    }
+    for (let i = 0; i < obstacles.length; i++) {
+        if (snake.at(0).x === obstacles.at(i).x && snake.at(0).y === obstacles.at(i).y) {
             console.log('game over');
             start = false;
             return true;
