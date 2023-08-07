@@ -398,15 +398,18 @@ function eatFood() {
     foods.forEach(function (food, i) {
         if (snake.at(0).x === food.x && snake.at(0).y === food.y) {
             food.element.style.transform = 'scale(0)';
-            let foodPos, foodPosStr, count = 0, snakePos = [];
+            let foodPos, foodPosStr, count = 0, snakePos = [], obstaclePos = [];
             snake.forEach(function (part) {
                 snakePos.push([part.x, part.y].join('_'));
+            });
+            obstacles.forEach(function (part) {
+                obstaclePos.push([part.x, part.y].join('_'));
             });
             do {
                 count++;
                 foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize];
                 foodPosStr = foodPos.join('_');
-            } while (snakePos.includes(foodPosStr) && count <= 10);
+            } while (obstaclePos.includes(foodPosStr) || (snakePos.includes(foodPosStr) && count <= 20));
             foods.push(newFood('apple', foodPos[0], foodPos[1]));
             document.body.appendChild(foods.at(-1).element);
             setTimeout(function () {
@@ -551,6 +554,9 @@ movePart(snake.at(-1), 'left');
 
 foods.push(newFood('apple', 120, 80));
 
+spawnBlade('blade');
+spawnBlade('blade');
+spawnBlade('blade');
 spawnBlade('blade');
 spawnBlade('blade');
 
