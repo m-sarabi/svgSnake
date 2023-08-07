@@ -148,7 +148,7 @@ bladeAnimate.setAttribute('attributeType', 'xml');
 bladeAnimate.setAttribute('type', 'rotate');
 bladeAnimate.setAttribute('from', '0 20 20');
 bladeAnimate.setAttribute('to', '360 20 20');
-bladeAnimate.setAttribute('dur', '2s');
+bladeAnimate.setAttribute('dur', '1s');
 bladeAnimate.setAttribute('repeatCount', 'indefinite');
 bladePath.appendChild(bladeAnimate);
 bladeSVG.appendChild(bladePath);
@@ -291,9 +291,46 @@ let newFood = function (type, x, y) {
     };
 };
 
+let newObstacle = function (type, x, y) {
+    let element;
+    switch (type) {
+        case 'blade':
+            element = bladeSVG.cloneNode(true);
+    }
+    absoluteMove(element, x, y);
+    document.body.appendChild(element);
+    return {
+        element: element,
+        type,
+        x,
+        y,
+    };
+};
+
 function absoluteMove(obj, x, y) {
     obj.style.left = x + 'px';
     obj.style.top = y + 'px';
+}
+
+function spawnBlade(type) {
+    let x, y;
+    let snakePos = [];
+    snake.forEach(function (part) {
+        snakePos.push([part.x, part.y].join('_'));
+    });
+    let foodPos = [];
+    foods.forEach(function (part) {
+        foodPos.push([part.x, part.y].join('_'));
+    });
+    let obstaclePos = [];
+    obstacles.forEach(function (part) {
+        obstaclePos.push([part.x, part.y].join('_'));
+    });
+    do {
+        x = Math.floor(Math.random() * 10) * cellSize;
+        y = Math.floor(Math.random() * 10) * cellSize;
+    } while (snakePos.includes([x, y].join('_')) || foodPos.includes([x, y].join('_')) || obstaclePos.includes([x, y].join('_')));
+    obstacles.push(newObstacle('blade', x, y));
 }
 
 /**
@@ -343,8 +380,10 @@ function collision() {
         if (snake.at(0).x === snake.at(i).x && snake.at(0).y === snake.at(i).y) {
             console.log('game over');
             start = false;
+            return true;
         }
     }
+    return false;
 }
 
 function eatFood() {
@@ -482,6 +521,7 @@ rules[1].style.transition = speed + 'ms linear';
 
 let snake = [];
 let foods = [];
+let obstacles = [];
 
 snake.push(newPart('head', 'right'));
 movePart(snake.at(-1), 'right');
@@ -503,6 +543,10 @@ movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'left');
 
 foods.push(newFood('apple', 120, 80));
+
+spawnBlade('blade');
+spawnBlade('blade');
+
 setTimeout(function () {
     foods.at(-1).element.style.transform = 'scale(1)';
 }, 1);
