@@ -338,7 +338,7 @@ function moveSnake() {
     }
 }
 
-function selfCollide() {
+function collision() {
     for (let i = 1; i < snake.length; i++) {
         if (snake.at(0).x === snake.at(i).x && snake.at(0).y === snake.at(i).y) {
             console.log('game over');
@@ -420,9 +420,7 @@ function isClockwise(previous, current) {
 }
 
 let direction = 'right';
-
 let start = false;
-
 let startMoving;
 
 document.addEventListener('click', function () {
@@ -464,7 +462,7 @@ function keyPressed(key) {
             if (!start) {
                 startMoving = setInterval(function () {
                     moveSnake();
-                    selfCollide();
+                    collision();
                     if (start === false) {
                         clearInterval(startMoving);
                     }
