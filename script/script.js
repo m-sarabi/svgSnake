@@ -1,6 +1,7 @@
 const cellSize = 40;
 const speed = 250;
 let boardSize = [10, 15];
+let openBorder = false;
 
 // all the svg parts and shapes are built with only cubic bézier curves
 
@@ -278,6 +279,39 @@ function movePart(part, direction) {
     }
     part.x += x;
     part.y += y;
+    if (openBorder) {
+        if (part.y < 0) {
+            part.element.classList.toggle('part');
+            part.y = (boardSize[1] - 1) * cellSize;
+            setTimeout(function () {
+                part.element.classList.toggle('part');
+            }, speed / 10);
+        } else if (part.y > (boardSize[1] - 1) * cellSize) {
+            part.element.classList.toggle('part');
+            part.y = 0;
+            setTimeout(function () {
+                part.element.classList.toggle('part');
+            }, 10);
+        } else if (part.x < 0) {
+            part.element.classList.toggle('part');
+            part.x = (boardSize[0] - 1) * cellSize;
+            setTimeout(function () {
+                part.element.classList.toggle('part');
+            }, speed / 10);
+        } else if (part.x > (boardSize[0] - 1) * cellSize) {
+            part.element.classList.toggle('part');
+            part.x = 0;
+            setTimeout(function () {
+                part.element.classList.toggle('part');
+            }, 10);
+        }
+    } else {
+        if (part.type === 'head' && (part.y < 0 || part.y > (boardSize[1] - 1) * cellSize ||
+            part.x < 0 || part.x > (boardSize[0] - 1) * cellSize)) {
+            console.log('game over');
+            start = false;
+        }
+    }
     part.element.style.left = part.x + 'px';
     part.element.style.top = part.y + 'px';
 }
