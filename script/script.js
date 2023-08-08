@@ -176,7 +176,7 @@ grid.setAttribute('height', board.clientHeight.toString());
 function drawLine(x1, y1, x2, y2) {
     let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('stroke', 'black');
-    line.setAttribute('opacity', '0.25');
+    line.setAttribute('opacity', '0.15');
     line.setAttribute('stroke-dasharray', '10, 2');
     line.setAttribute('x1', x1.toString());
     line.setAttribute('y1', y1.toString());
@@ -576,7 +576,14 @@ function isClockwise(previous, current) {
 
 let direction = 'right';
 let start = false;
-let startMoving;
+setInterval(function () {
+    if (start === false) {
+        return;
+    }
+    moveSnake();
+    collision();
+}, speed);
+
 
 document.addEventListener('click', function () {
     moveSnake();
@@ -588,43 +595,42 @@ document.addEventListener('keydown', function (event) {
 });
 
 function keyPressed(key) {
+    function startTrue() {
+        if (!start) {
+            start = true;
+        }
+    }
+
     switch (key) {
         case 'ArrowUp':
         case 'KeyW':
             if (snake.at(0).direction !== 'down') {
                 direction = 'up';
+                startTrue();
             }
             break;
         case 'ArrowRight':
         case 'KeyD':
             if (snake.at(0).direction !== 'left') {
                 direction = 'right';
+                startTrue();
             }
             break;
         case 'ArrowDown':
         case 'KeyS':
             if (snake.at(0).direction !== 'up') {
                 direction = 'down';
+                startTrue();
             }
             break;
         case 'ArrowLeft':
         case 'KeyA':
             if (snake.at(0).direction !== 'right') {
                 direction = 'left';
+                startTrue();
             }
             break;
         case 'Space':
-            if (!start) {
-                startMoving = setInterval(function () {
-                    moveSnake();
-                    collision();
-                    if (start === false) {
-                        clearInterval(startMoving);
-                    }
-                }, speed);
-            } else {
-                clearInterval(startMoving);
-            }
             start = !start;
             break;
     }
