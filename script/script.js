@@ -589,6 +589,38 @@ document.addEventListener('keydown', function (event) {
     keyPressed(event.code);
 });
 
+let touchPos = [[], []];
+board.addEventListener('touchstart', function (event) {
+    event.preventDefault();
+    touchPos[0] = [event.changedTouches[0].screenX, event.changedTouches[0].screenY];
+});
+
+document.addEventListener('touchmove', function (event) {
+    touchPos[1] = [event.changedTouches[0].screenX, event.changedTouches[0].screenY];
+    touchToKey();
+});
+
+document.addEventListener('touchend', function () {
+    touchPos = [[], []];
+});
+
+function touchToKey() {
+    let touchThreshold = cellSize * 0.75;
+    if (Math.abs(touchPos[1][0] - touchPos[0][0]) > Math.abs(touchPos[1][1] - touchPos[0][1])) {
+        if (touchPos[1][0] - touchPos[0][0] > touchThreshold) {
+            keyPressed('ArrowRight');
+        } else if (touchPos[1][0] - touchPos[0][0] < -touchThreshold) {
+            keyPressed('ArrowLeft');
+        }
+    } else if (Math.abs(touchPos[1][0] - touchPos[0][0]) < Math.abs(touchPos[1][1] - touchPos[0][1])) {
+        if (touchPos[1][1] - touchPos[0][1] > touchThreshold) {
+            keyPressed('ArrowDown');
+        } else if (touchPos[1][1] - touchPos[0][1] < -touchThreshold) {
+            keyPressed('ArrowUp');
+        }
+    }
+}
+
 function keyPressed(key) {
     function startTrue() {
         if (!start) {
