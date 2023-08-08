@@ -4,18 +4,18 @@ const speed = 250;
 // all the svg parts and shapes are built with only cubic bézier curves
 
 // snake parts in svg path
-const tailPathD = 'M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 40 30';
+const tailPathD = rescaleSVG(['M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 35 30 40 30']);
 // snake tail
 const tailSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 tailSVG.setAttribute('class', 'part');
 tailSVG.style.position = 'absolute';
 const tailPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-tailPath.setAttribute('d', tailPathD);
+tailPath.setAttribute('d', tailPathD[0]);
 tailPath.setAttribute('fill', 'orange');
 tailPath.setAttribute('stroke', 'black');
 tailSVG.appendChild(tailPath);
 
-const bodyCurvedD = {
+const bodyCurvedD = rescaleSVG({
     right_down: ['M 0 30 C 0 25 0 15 0 10 C 15 10 30 25 30 40 C 25 40 15 40 10 40 C 10 35 5 30 0 30',
         'M 0 10 C 15 10 30 25 30 40 M 10 40 C 10 35 5 30 0 30'],
     down_left: ['M 10 0 C 15 0 25 0 30 0 C 30 15 15 30 0 30 C 0 25 0 15 0 10 C 5 10 10 5 10 0',
@@ -33,7 +33,7 @@ const bodyCurvedD = {
         'M 30 0 C 30 5 35 10 40 10 M 40 30 C 25 30 10 15 10 0'],
     left_down: ['M 40 10 C 40 15 40 25 40 30 C 35 30 30 35 30 40 C 25 40 15 40 10 40 C 10 25 25 10 40 10',
         'M 40 30 C 35 30 30 35 30 40 M 10 40 C 10 25 25 10 40 10'],
-};
+});
 // snake body curved
 const bodyCurveSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 bodyCurveSVG.setAttribute('class', 'part');
@@ -48,7 +48,7 @@ bodyCurvePathStroke.setAttribute('stroke', 'black');
 bodyCurveSVG.appendChild(bodyCurvePath);
 bodyCurveSVG.appendChild(bodyCurvePathStroke);
 
-const bodyStraightD = {
+const bodyStraightD = rescaleSVG({
     right: ['M 0 30 C 0 25 0 15 0 10 C 5 10 35 10 40 10 C 40 15 40 25 40 30 C 35 30 5 30 0 30',
         'M 0 10 C 5 10 35 10 40 10 M 40 30 C 35 30 5 30 0 30'],
     down: ['M 10 0 C 15 0 25 0 30 0 C 30 5 30 35 30 40 C 25 40 15 40 10 40 C 10 35 10 5 10 0',
@@ -57,7 +57,7 @@ const bodyStraightD = {
         'M 40 30 C 35 30 5 30 0 30 M 0 10 C 5 10 35 10 40 10'],
     up: ['M 30 40 C 25 40 15 40 10 40 C 10 35 10 5 10 0 C 15 0 25 0 30 0 C 30 5 30 35 30 40',
         'M 10 40 C 10 35 10 5 10 0 M 30 0 C 30 5 30 35 30 40'],
-};
+});
 // snake body straight
 const bodyStraightSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 bodyStraightSVG.setAttribute('class', 'part');
@@ -72,11 +72,11 @@ bodyStraightPathStroke.setAttribute('stroke', 'black');
 bodyStraightSVG.appendChild(bodyStraightPath);
 bodyStraightSVG.appendChild(bodyStraightPathStroke);
 
-const headPathD = [
+const headPathD = rescaleSVG([
     'M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10',
     'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22',
     'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30',
-    'M 15 10 C 18 10 18 13 15 13 C 18 13 18 10 15 10 M 15 30 C 18 30 18 27 15 27 C 18 27 18 30 15 30'];
+    'M 15 10 C 18 10 18 13 15 13 C 18 13 18 10 15 10 M 15 30 C 18 30 18 27 15 27 C 18 27 18 30 15 30']);
 // snake head
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
@@ -108,8 +108,8 @@ headGroup.appendChild(headEyes);
 headSVG.appendChild(headGroup);
 
 // foods as svg path
-const ApplePathD = ['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
-    'M 20 11 C 21 7 22 6 25 5 C 25 8 23 9 20 11'];
+const ApplePathD = rescaleSVG(['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
+    'M 20 11 C 21 7 22 6 25 5 C 25 8 23 9 20 11']);
 // snake tail
 const appleSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 appleSVG.setAttribute('class', 'part');
@@ -128,8 +128,8 @@ appleSVG.appendChild(leafPath);
 
 
 // obstacle svg elements
-const bladePathD = ['M 20 5 C 30 10 15 20 35 20 C 30 30 20 15 20 35 C 10 30 25 20 5 20 C 10 10 20 25 20 5',
-    'M 18 20 C 18 19 19 18 20 18 C 21 18 22 19 22 20 C 22 21 21 22 20 22 C 19 22 18 21 18 20'];
+const bladePathD = rescaleSVG(['M 20 5 C 30 10 15 20 35 20 C 30 30 20 15 20 35 C 10 30 25 20 5 20 C 10 10 20 25 20 5',
+    'M 18 20 C 18 19 19 18 20 18 C 21 18 22 19 22 20 C 22 21 21 22 20 22 C 19 22 18 21 18 20']);
 // blade obstacle
 const bladeSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 bladeSVG.style.position = 'absolute';
@@ -145,13 +145,43 @@ const bladeAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'ani
 bladeAnimate.setAttribute('attributeName', 'transform');
 bladeAnimate.setAttribute('attributeType', 'xml');
 bladeAnimate.setAttribute('type', 'rotate');
-bladeAnimate.setAttribute('from', '0 20 20');
-bladeAnimate.setAttribute('to', '360 20 20');
+bladeAnimate.setAttribute('from', `0 ${cellSize / 2} ${cellSize / 2}`);
+bladeAnimate.setAttribute('to', `360 ${cellSize / 2} ${cellSize / 2}`);
 bladeAnimate.setAttribute('dur', '1s');
 bladeAnimate.setAttribute('repeatCount', 'indefinite');
 bladePath.appendChild(bladeAnimate);
 bladeSVG.appendChild(bladePath);
 bladeSVG.appendChild(bladeCenterPath);
+
+function rescaleSVG(svgPaths) {
+
+    if (cellSize === 40) {
+        return svgPaths;
+    }
+
+    function rescalePath(path) {
+        let newPath = path.split(' ');
+        newPath.forEach(function (value, index) {
+            if (isFinite(value)) {
+                newPath[index] = value * cellSize / 40;
+            }
+        });
+        return newPath.join(' ').trim();
+    }
+
+    if (Array.isArray(svgPaths)) {
+        svgPaths.forEach(function (path, index) {
+            svgPaths[index] = rescalePath(path);
+        });
+    } else {
+        for (let key in svgPaths) {
+            svgPaths[key].forEach(function (path, index) {
+                svgPaths[key][index] = rescalePath(path);
+            });
+        }
+    }
+    return svgPaths;
+}
 
 /**
  * rotate a svg path by 90 degrees clockwise or counter-clockwise
@@ -532,6 +562,8 @@ let style = document.styleSheets[0];
 let rules = style.cssRules;
 rules[0].style.transition = speed + 'ms linear';
 rules[1].style.transition = speed + 'ms linear';
+rules[2].style.width = cellSize + 'px';
+rules[2].style.height = cellSize + 'px';
 
 let snake = [];
 let foods = [];
@@ -556,7 +588,7 @@ snake.push(newPart('tail', 'right'));
 movePart(snake.at(-1), 'right');
 movePart(snake.at(-1), 'left');
 
-foods.push(newFood('apple', 120, 80));
+spawnFood();
 
 spawnBlade('blade');
 spawnBlade('blade');
