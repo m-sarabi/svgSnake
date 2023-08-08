@@ -153,6 +153,14 @@ bladePath.appendChild(bladeAnimate);
 bladeSVG.appendChild(bladePath);
 bladeSVG.appendChild(bladeCenterPath);
 
+let board = document.createElement('div');
+board.style.position = 'relative';
+board.style.margin = '0 auto';
+board.style.width = 10 * cellSize + 'px';
+board.style.height = 15 * cellSize + 'px';
+board.style.backgroundColor = 'lightgreen';
+document.body.appendChild(board);
+
 function rescaleSVG(svgPaths) {
 
     if (cellSize === 40) {
@@ -294,7 +302,7 @@ let newPart = function (type, direction, x = 0, y = 0, scale = 1) {
     }
     absoluteMove(element, x, y);
     element.style.scale = scale.toString();
-    document.body.appendChild(element);
+    board.appendChild(element);
     return {
         element: element,
         type,
@@ -311,7 +319,7 @@ let newFood = function (type, x, y) {
             element = appleSVG.cloneNode(true);
     }
     absoluteMove(element, x, y);
-    document.body.appendChild(element);
+    board.appendChild(element);
     return {
         element: element,
         type,
@@ -327,7 +335,7 @@ let newObstacle = function (type, x, y) {
             element = bladeSVG.cloneNode(true);
     }
     absoluteMove(element, x, y);
-    document.body.appendChild(element);
+    board.appendChild(element);
     return {
         element: element,
         type,
@@ -357,7 +365,7 @@ function spawnBlade(type) {
     });
     do {
         x = Math.floor(Math.random() * 10) * cellSize;
-        y = Math.floor(Math.random() * 10) * cellSize;
+        y = Math.floor(Math.random() * 15) * cellSize;
     } while (snakePos.includes([x, y].join('_')) || foodPos.includes([x, y].join('_')) || obstaclePos.includes([x, y].join('_')));
     obstacles.push(newObstacle(type, x, y));
 }
@@ -372,12 +380,11 @@ function spawnFood() {
     });
     do {
         count++;
-        foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 10) * cellSize];
+        foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 15) * cellSize];
         foodPosStr = foodPos.join('_');
     } while (obstaclePos.includes(foodPosStr) || (snakePos.includes(foodPosStr) && count <= 20));
     foods.push(newFood('apple', foodPos[0], foodPos[1]));
     foods.at(-1).element.style.transform = 'scale(0)';
-    document.body.appendChild(foods.at(-1).element);
     setTimeout(function () {
         foods.at(-1).element.style.transform = 'scale(1)';
     }, 10);
