@@ -584,11 +584,6 @@ setInterval(function () {
     collision();
 }, speed);
 
-
-document.addEventListener('click', function () {
-    moveSnake();
-});
-
 document.addEventListener('keydown', function (event) {
     // console.log(event.code);
     keyPressed(event.code);
