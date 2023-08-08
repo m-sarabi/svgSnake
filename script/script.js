@@ -1,5 +1,6 @@
 const cellSize = 40;
 const speed = 250;
+let boardSize = [10, 15];
 
 // all the svg parts and shapes are built with only cubic bézier curves
 
@@ -153,13 +154,43 @@ bladePath.appendChild(bladeAnimate);
 bladeSVG.appendChild(bladePath);
 bladeSVG.appendChild(bladeCenterPath);
 
+// playing board to hold all snake elements
 let board = document.createElement('div');
 board.style.position = 'relative';
 board.style.margin = '0 auto';
-board.style.width = 10 * cellSize + 'px';
-board.style.height = 15 * cellSize + 'px';
+board.style.width = boardSize[0] * cellSize + 'px';
+board.style.height = boardSize[1] * cellSize + 'px';
 board.style.backgroundColor = 'lightgreen';
+board.style.boxShadow = '0 0 5px black';
 document.body.appendChild(board);
+
+//drawing the grid on the board
+let grid = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+grid.style.position = 'absolute';
+grid.style.top = '0';
+grid.style.left = '0';
+grid.setAttribute('width', board.clientWidth.toString());
+grid.setAttribute('height', board.clientHeight.toString());
+
+function drawLine(x1, y1, x2, y2) {
+    let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('stroke', 'black');
+    line.setAttribute('opacity', '0.25');
+    line.setAttribute('stroke-dasharray', '10, 2');
+    line.setAttribute('x1', x1.toString());
+    line.setAttribute('y1', y1.toString());
+    line.setAttribute('x2', x2.toString());
+    line.setAttribute('y2', y2.toString());
+    grid.appendChild(line);
+}
+
+for (let i = cellSize; i < board.clientHeight; i += cellSize) {
+    drawLine(0, i, board.clientWidth, i);
+}
+for (let i = cellSize; i < board.clientWidth; i += cellSize) {
+    drawLine(i, 0, i, board.clientHeight);
+}
+board.appendChild(grid);
 
 function rescaleSVG(svgPaths) {
 
@@ -364,8 +395,8 @@ function spawnBlade(type) {
         obstaclePos.push([part.x, part.y].join('_'));
     });
     do {
-        x = Math.floor(Math.random() * 10) * cellSize;
-        y = Math.floor(Math.random() * 15) * cellSize;
+        x = Math.floor(Math.random() * boardSize[0]) * cellSize;
+        y = Math.floor(Math.random() * boardSize[1]) * cellSize;
     } while (snakePos.includes([x, y].join('_')) || foodPos.includes([x, y].join('_')) || obstaclePos.includes([x, y].join('_')));
     obstacles.push(newObstacle(type, x, y));
 }
@@ -380,7 +411,7 @@ function spawnFood() {
     });
     do {
         count++;
-        foodPos = [Math.floor(Math.random() * 10) * cellSize, Math.floor(Math.random() * 15) * cellSize];
+        foodPos = [Math.floor(Math.random() * boardSize[0]) * cellSize, Math.floor(Math.random() * boardSize[1]) * cellSize];
         foodPosStr = foodPos.join('_');
     } while (obstaclePos.includes(foodPosStr) || (snakePos.includes(foodPosStr) && count <= 20));
     foods.push(newFood('apple', foodPos[0], foodPos[1]));
