@@ -674,32 +674,38 @@ let snake = [];
 let foods = [];
 let obstacles = [];
 
-snake.push(newPart('head', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.at(0).element.style.zIndex = '10';
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'right');
-snake.push(newPart('body', 'right'));
-movePart(snake.at(-1), 'right');
-snake.push(newPart('tail', 'right'));
-movePart(snake.at(-1), 'right');
-movePart(snake.at(-1), 'left');
+function newBoard() {
+    snake = [];
+    foods = [];
+    obstacles = [];
 
-spawnFood();
+    snake.push(newPart('head', 'right'));
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    snake.at(0).element.style.zIndex = '10';
+    snake.push(newPart('body', 'right'));
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    snake.push(newPart('body', 'right'));
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'right');
+    snake.push(newPart('body', 'right'));
+    movePart(snake.at(-1), 'right');
+    snake.push(newPart('tail', 'right'));
+    movePart(snake.at(-1), 'right');
+    movePart(snake.at(-1), 'left');
 
-spawnBlade('blade');
-spawnBlade('blade');
-spawnBlade('blade');
-spawnBlade('blade');
-spawnBlade('blade');
+    spawnFood();
+
+    for (let i = 0; i < 5; i++) {
+        spawnBlade('blade');
+    }
+}
+
+newBoard();
 
 setTimeout(function () {
     foods.at(-1).element.style.transform = 'scale(1)';
