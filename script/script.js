@@ -609,14 +609,19 @@ function touchToKey() {
     if (Math.abs(touchPos[1][0] - touchPos[0][0]) > Math.abs(touchPos[1][1] - touchPos[0][1])) {
         if (touchPos[1][0] - touchPos[0][0] > touchThreshold) {
             keyPressed('ArrowRight');
+            touchPos[0] = touchPos[1];
         } else if (touchPos[1][0] - touchPos[0][0] < -touchThreshold) {
             keyPressed('ArrowLeft');
+            touchPos[0] = touchPos[1];
         }
     } else if (Math.abs(touchPos[1][0] - touchPos[0][0]) < Math.abs(touchPos[1][1] - touchPos[0][1])) {
         if (touchPos[1][1] - touchPos[0][1] > touchThreshold) {
             keyPressed('ArrowDown');
+            touchPos[0] = touchPos[1];
         } else if (touchPos[1][1] - touchPos[0][1] < -touchThreshold) {
             keyPressed('ArrowUp');
+            touchPos[0] = touchPos[1];
+
         }
     }
 }
