@@ -297,7 +297,7 @@ function morph(path, path1, path2) {
         t = (progress % duration) / duration;
 
         if (t >= pt) {
-            path.setAttribute('d', interpolatePath(path1, path2, t));
+            path.setAttribute('d', interpolate(path1, path2, t));
 
             requestAnimationFrame(animateMorph);
         } else {
