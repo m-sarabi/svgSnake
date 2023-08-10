@@ -532,21 +532,18 @@ function eatFood() {
 }
 
 function growSnake(pastHeadDir, x, y) {
-    let tempSnake = snake.slice(0, 1);
+    let part;
     if (snake.at(0).direction === pastHeadDir) {
-        tempSnake.push(newPart('body', pastHeadDir, x, y, 0));
-        tempSnake.at(-1).element.children[0].setAttribute('d', bodyStraightD[snake.at(0).direction][0]);
-        tempSnake.at(-1).element.children[1].setAttribute('d', bodyStraightD[snake.at(0).direction][1]);
+        part = newPart('body', pastHeadDir, x, y, 0);
+        part.element.children[0].setAttribute('d', bodyStraightD[snake.at(0).direction][0]);
+        part.element.children[1].setAttribute('d', bodyStraightD[snake.at(0).direction][1]);
     } else {
-        tempSnake.push(newPart('bodyC', pastHeadDir, x, y, 0));
+        part = newPart('bodyC', pastHeadDir, x, y, 0);
         let newPartDir = [pastHeadDir, snake.at(0).direction].join('_');
-        tempSnake.at(-1).element.children[0].setAttribute('d', bodyCurvedD[newPartDir][0]);
-        tempSnake.at(-1).element.children[1].setAttribute('d', bodyCurvedD[newPartDir][1]);
+        part.element.children[0].setAttribute('d', bodyCurvedD[newPartDir][0]);
+        part.element.children[1].setAttribute('d', bodyCurvedD[newPartDir][1]);
     }
-    for (let i = 1; i < snake.length; i++) {
-        tempSnake.push(snake[i]);
-    }
-    snake = tempSnake;
+    snake.splice(1, 0, part);
     setTimeout(function () {
         snake.at(1).element.style.scale = '1';
     }, 50);
