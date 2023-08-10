@@ -267,6 +267,38 @@ function interpolate(path1, path2, t) {
     }).join(' ');
 }
 
+function morph(path, path1, path2) {
+    let start = null;
+    let t = 0;
+    let progress;
+
+    if (path1 === null) {
+        path1 = path.getAttribute('d');
+    }
+
+    function animateMorph(timestamp) {
+        if (!start) {
+            start = timestamp;
+        }
+        progress = timestamp - start;
+        console.log(progress);
+        const duration = 2000;
+        let pt = t;
+        t = (progress % duration) / duration;
+
+        if (t >= pt) {
+            const interpolatedPath = interpolatePath(path1, path2, t);
+            path.setAttribute('d', interpolatedPath);
+
+            requestAnimationFrame(animateMorph);
+        } else {
+            path.setAttribute('d', path2);
+        }
+    }
+
+    requestAnimationFrame(animateMorph);
+}
+
 /**
  * moves the snake part by one cell in the direction specified
  * @param part
