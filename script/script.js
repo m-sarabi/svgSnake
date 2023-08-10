@@ -202,6 +202,7 @@ function rescaleSVG(svgPaths) {
     function rescalePath(path) {
         let newPath = path.split(' ');
         newPath.forEach(function (value, index) {
+            // noinspection JSCheckFunctionSignatures
             if (isFinite(value)) {
                 newPath[index] = value * cellSize / 40;
             }
@@ -256,10 +257,19 @@ function rotatePath(svgPath, clockwise) {
     return rotatedPath.trim().replace(/  +/, ' ');
 }
 
+/**
+ *
+ * @param path1 {string}
+ * @param path2 {string}
+ * @param t {number}
+ * @return {string}
+ */
 function interpolate(path1, path2, t) {
     const parts1 = path1.split(' ');
     const parts2 = path2.split(' ');
     return parts1.map(function (value1, index) {
+
+        // noinspection JSCheckFunctionSignatures
         if (isFinite(value1)) {
             return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * Math.max(t, 1);
         }
@@ -287,8 +297,7 @@ function morph(path, path1, path2) {
         t = (progress % duration) / duration;
 
         if (t >= pt) {
-            const interpolatedPath = interpolatePath(path1, path2, t);
-            path.setAttribute('d', interpolatedPath);
+            path.setAttribute('d', interpolatePath(path1, path2, t));
 
             requestAnimationFrame(animateMorph);
         } else {
@@ -710,10 +719,10 @@ function keyPressed(key) {
 
 let style = document.styleSheets[0];
 let rules = style.cssRules;
-rules[0].style.transition = speed + 'ms linear';
-rules[1].style.transition = speed + 'ms linear';
-rules[2].style.width = cellSize + 'px';
-rules[2].style.height = cellSize + 'px';
+rules[0]['style']['transition'] = speed + 'ms linear';
+rules[1]['style']['transition'] = speed + 'ms linear';
+rules[2]['style']['width'] = cellSize + 'px';
+rules[2]['style']['height'] = cellSize + 'px';
 
 let snake = [];
 let foods = [];
