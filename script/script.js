@@ -1,5 +1,5 @@
 const cellSize = 40;
-const speed = 250;
+const speed = 400;
 let boardSize = [10, 15];
 let openBorder = false;
 
@@ -10,6 +10,7 @@ const tailPathD = rescaleSVG(['M 40 10 C 35 10 15 10 10 10 C 0 10 0 30 10 30 C 1
 // snake tail
 const tailSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 tailSVG.setAttribute('class', 'part');
+tailSVG.setAttribute('class', 'ends');
 tailSVG.style.position = 'absolute';
 const tailPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 tailPath.setAttribute('d', tailPathD[0]);
@@ -82,6 +83,7 @@ const headPathD = rescaleSVG([
 // snake head
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
+headSVG.setAttribute('class', 'ends');
 headSVG.style.position = 'absolute';
 const headGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 const headMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -271,13 +273,13 @@ function interpolate(path1, path2, t) {
 
         // noinspection JSCheckFunctionSignatures
         if (isFinite(value1)) {
-            return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * Math.max(t, 1);
+            return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * t;
         }
         return value1;
     }).join(' ');
 }
 
-function morph(path, path1, path2) {
+function morph(path, path1, path2, snakePartI) {
     let start = null;
     let t = 0;
     let progress;
@@ -291,13 +293,17 @@ function morph(path, path1, path2) {
             start = timestamp;
         }
         progress = timestamp - start;
-        console.log(progress);
-        const duration = 2000;
+        const duration = speed;
         let pt = t;
         t = (progress % duration) / duration;
 
         if (t >= pt) {
-            path.setAttribute('d', interpolate(path1, path2, t));
+            const interp = interpolate(path1, path2, t);
+            if (snakePartI === 1) {
+                console.log(path1);
+                console.log(path2);
+            }
+            path.setAttribute('d', interp);
 
             requestAnimationFrame(animateMorph);
         } else {
@@ -530,14 +536,18 @@ function moveSnake() {
                 snake.at(i).type = 'bodyC';
                 let children = snake.at(i).element.children;
                 let curveDirection = [pastDirections[i - 1], snake.at(i - 1).direction].join('_');
-                children[0].setAttribute('d', bodyCurvedD[curveDirection][0]);
-                children[1].setAttribute('d', bodyCurvedD[curveDirection][1]);
+                morph(children[0], children[0].getAttribute('d'), bodyCurvedD[curveDirection][0]);
+                morph(children[1], children[1].getAttribute('d'), bodyCurvedD[curveDirection][1]);
+                // children[0].setAttribute('d', bodyCurvedD[curveDirection][0]);
+                // children[1].setAttribute('d', bodyCurvedD[curveDirection][1]);
             } else if (snake.at(i).type === 'bodyC' && pastDirections[i - 1] === snake.at(i - 1).direction) {
                 snake.at(i).type = 'body';
                 let children = snake.at(i).element.children;
                 let straightDirection = snake.at(i - 1).direction;
-                children[0].setAttribute('d', bodyStraightD[straightDirection][0]);
-                children[1].setAttribute('d', bodyStraightD[straightDirection][1]);
+                morph(children[0], children[0].getAttribute('d'), bodyStraightD[straightDirection][0]);
+                morph(children[1], children[1].getAttribute('d'), bodyStraightD[straightDirection][1]);
+                // children[0].setAttribute('d', bodyStraightD[straightDirection][0]);
+                // children[1].setAttribute('d', bodyStraightD[straightDirection][1]);
             } else {
                 if (pastDirections[i - 1] !== snake.at(i - 1).direction) {
                     rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], snake.at(i - 1).direction));
@@ -719,10 +729,12 @@ function keyPressed(key) {
 
 let style = document.styleSheets[0];
 let rules = style.cssRules;
-rules[0]['style']['transition'] = speed + 'ms linear';
-rules[1]['style']['transition'] = speed + 'ms linear';
-rules[2]['style']['width'] = cellSize + 'px';
-rules[2]['style']['height'] = cellSize + 'px';
+rules[0]['style']['transition'] = 'top ' + speed + 'ms linear, ' + 'left ' + speed + 'ms linear';
+rules[1]['style']['transition'] = 'top ' + speed + 'ms linear, ' + 'left ' + speed + 'ms linear';
+rules[1]['style']['width'] = cellSize + 'px';
+rules[1]['style']['height'] = cellSize + 'px';
+rules[2]['style']['transition'] = 'all ' + speed + 'ms linear';
+rules[3]['style']['transition'] = 'all ' + speed + 'ms linear';
 
 let snake = [];
 let foods = [];
