@@ -256,6 +256,17 @@ function rotatePath(svgPath, clockwise) {
     return rotatedPath.trim().replace(/  +/, ' ');
 }
 
+function interpolate(path1, path2, t) {
+    const parts1 = path1.split(' ');
+    const parts2 = path2.split(' ');
+    return parts1.map(function (value1, index) {
+        if (isFinite(value1)) {
+            return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * Math.max(t, 1);
+        }
+        return value1;
+    }).join(' ');
+}
+
 /**
  * moves the snake part by one cell in the direction specified
  * @param part
