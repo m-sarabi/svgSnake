@@ -103,13 +103,13 @@ const headEyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 headEyes.setAttribute('d', headPathD[2]);
 headEyes.setAttribute('fill', 'white');
 headEyes.setAttribute('stroke', 'black');
-const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-eyesAnimate.setAttribute('attributeName', 'd');
-eyesAnimate.setAttribute('values', headPathD[2] + ';' + headPathD[2] + ';' + headPathD[3] + ';' + headPathD[2]);
-eyesAnimate.setAttribute('keyTimes', '0;0.7;0.85;1');
-eyesAnimate.setAttribute('dur', '5s');
-eyesAnimate.setAttribute('repeatCount', 'indefinite');
-headEyes.appendChild(eyesAnimate);
+// const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+// eyesAnimate.setAttribute('attributeName', 'd');
+// eyesAnimate.setAttribute('values', headPathD[2] + ';' + headPathD[2] + ';' + headPathD[3] + ';' + headPathD[2]);
+// eyesAnimate.setAttribute('keyTimes', '0;0.7;0.85;1');
+// eyesAnimate.setAttribute('dur', '5s');
+// eyesAnimate.setAttribute('repeatCount', 'indefinite');
+// headEyes.appendChild(eyesAnimate);
 headGroup.appendChild(headMain);
 headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
@@ -429,13 +429,13 @@ function rotatePart(part, clockwise) {
     let children;
     if (part.type === 'head') {
         children = part.element.children[0].children;
-        let childAnim = children[2].children[0];
-        let animPaths = childAnim.getAttribute('values').split(';');
-        for (let i = 0; i < animPaths.length; i++) {
-            animPaths[i] = rotatePath(animPaths[i], clockwise);
-        }
-        childAnim = animPaths.join(';');
-        children[2].children[0].setAttribute('values', childAnim);
+        // let childAnim = children[2].children[0];
+        // let animPaths = childAnim.getAttribute('values').split(';');
+        // for (let i = 0; i < animPaths.length; i++) {
+        //     animPaths[i] = rotatePath(animPaths[i], clockwise);
+        // }
+        // childAnim = animPaths.join(';');
+        // children[2].children[0].setAttribute('values', childAnim);
     } else {
         children = part.element.children;
     }
