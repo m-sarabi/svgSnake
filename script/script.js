@@ -195,9 +195,9 @@ for (let i = cellSize; i < board.clientWidth; i += cellSize) {
 }
 board.appendChild(grid);
 
-function rescaleSVG(svgPaths) {
+function rescaleSVG(svgPaths, scale = cellSize, center = false) {
 
-    if (cellSize === 40) {
+    if (scale === 40) {
         return svgPaths;
     }
 
@@ -206,7 +206,10 @@ function rescaleSVG(svgPaths) {
         newPath.forEach(function (value, index) {
             // noinspection JSCheckFunctionSignatures
             if (isFinite(value)) {
-                newPath[index] = value * cellSize / 40;
+                newPath[index] = value * scale / 40;
+                if (center) {
+                    newPath[index] += (cellSize - scale) / 2;
+                }
             }
         });
         return newPath.join(' ').trim();
