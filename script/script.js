@@ -1,4 +1,4 @@
-const cellSize = 50;
+const cellSize = 40;
 const speed = 500;
 let boardSize = [10, 15];
 let openBorder = false;
@@ -303,19 +303,18 @@ function morph(morphInfo) {
         if (t >= pt) {
             for (let part of morphInfo) {
                 for (let childIndex = 1; childIndex < part.length; childIndex++) {
-                    console.log([part[childIndex][0], part[childIndex][1]]);
                     part[0][childIndex - 1].setAttribute('d', interpolate(part[childIndex][0], part[childIndex][1], t));
                 }
             }
 
             requestAnimationFrame(animateMorph);
-        } /*else {
+        } else {
             for (let part of morphInfo) {
                 for (let childIndex = 1; childIndex < part.length; childIndex++) {
                     part[0][childIndex - 1].setAttribute('d', part[childIndex][1]);
                 }
             }
-        }*/
+        }
     }
 
     requestAnimationFrame(animateMorph);
@@ -538,16 +537,20 @@ function moveSnake() {
 
     if (eatFood()) {
         growSnake(pastDirections[0], pastHeadPos[0], pastHeadPos[1]);
-        let paths;
+        let paths, pathsSmall;
         let newPartDir = [pastDirections[0], direction].join('_');
         if (direction === pastDirections[0]) {
             paths = [bodyStraightD[snake.at(0).direction][0], bodyStraightD[snake.at(0).direction][1]];
+            pathsSmall = rescaleSVG([bodyStraightD[snake.at(0).direction][0], bodyStraightD[snake.at(0).direction][1]], 1, true);
         } else {
             paths = [bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]];
+            pathsSmall = rescaleSVG([bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]], 1, true);
         }
+        console.log(paths);
+        console.log(pathsSmall);
         morphInfo.push([snake.at(1).element.children,
-            [snake.at(1).element.children[0].getAttribute('d'), paths[0]],
-            [snake.at(1).element.children[1].getAttribute('d'), paths[1]]]);
+            [pathsSmall[0], paths[0]],
+            [pathsSmall[1], paths[1]]]);
     } else {
         for (let i = snake.length - 1; i > 0; i--) {
             if (['body', 'bodyC'].includes(snake.at(i).type) && pastDirections[i - 1] !== newDirections[i - 1]) {
