@@ -520,41 +520,55 @@ function moveSnake() {
     for (const part of snake) {
         pastDirections.push(part.direction);
     }
-    if (direction !== snake.at(0).direction) {
-        rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
+    let newDirections = [];
+    newDirections[0] = direction;
+    for (let i = 1; i < snake.length; i++) {
+        newDirections.push(pastDirections[i - 1]);
     }
-    movePart(snake.at(0), direction);
-    snake.at(0).direction = direction;
 
     if (eatFood()) {
         growSnake(pastDirections[0], pastHeadPos[0], pastHeadPos[1]);
+        let paths;
+        let newPartDir = [pastDirections[0], direction].join('_');
+        if (direction === pastDirections[0]) {
+            paths = [bodyStraightD[snake.at(0).direction][0], bodyStraightD[snake.at(0).direction][1]];
+        } else {
+            paths = [bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]];
+        }
+        morph(snake.at(1).element.children[0], null, paths[0],);
+        morph(snake.at(1).element.children[1], null, paths[1],);
     } else {
-        for (let i = 1; i < snake.length; i++) {
-            if (['body', 'bodyC'].includes(snake.at(i).type) && pastDirections[i - 1] !== snake.at(i - 1).direction) {
+        for (let i = snake.length - 1; i > 0; i--) {
+            if (['body', 'bodyC'].includes(snake.at(i).type) && pastDirections[i - 1] !== newDirections[i - 1]) {
                 snake.at(i).type = 'bodyC';
                 let children = snake.at(i).element.children;
-                let curveDirection = [pastDirections[i - 1], snake.at(i - 1).direction].join('_');
+                let curveDirection = [pastDirections[i - 1], newDirections[i - 1]].join('_');
                 morph(children[0], children[0].getAttribute('d'), bodyCurvedD[curveDirection][0]);
                 morph(children[1], children[1].getAttribute('d'), bodyCurvedD[curveDirection][1]);
                 // children[0].setAttribute('d', bodyCurvedD[curveDirection][0]);
                 // children[1].setAttribute('d', bodyCurvedD[curveDirection][1]);
-            } else if (snake.at(i).type === 'bodyC' && pastDirections[i - 1] === snake.at(i - 1).direction) {
+            } else if (snake.at(i).type === 'bodyC' && pastDirections[i - 1] === newDirections[i - 1]) {
                 snake.at(i).type = 'body';
                 let children = snake.at(i).element.children;
-                let straightDirection = snake.at(i - 1).direction;
+                let straightDirection = newDirections[i - 1];
                 morph(children[0], children[0].getAttribute('d'), bodyStraightD[straightDirection][0]);
                 morph(children[1], children[1].getAttribute('d'), bodyStraightD[straightDirection][1]);
                 // children[0].setAttribute('d', bodyStraightD[straightDirection][0]);
                 // children[1].setAttribute('d', bodyStraightD[straightDirection][1]);
             } else {
-                if (pastDirections[i - 1] !== snake.at(i - 1).direction) {
-                    rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], snake.at(i - 1).direction));
+                if (pastDirections[i - 1] !== newDirections[i - 1]) {
+                    rotatePart(snake.at(i), isClockwise(pastDirections[i - 1], newDirections[i - 1]));
                 }
             }
             movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = pastDirections[i - 1];
         }
     }
+    if (direction !== snake.at(0).direction) {
+        rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
+    }
+    movePart(snake.at(0), direction);
+    snake.at(0).direction = direction;
 }
 
 function collision() {
@@ -592,21 +606,18 @@ function eatFood() {
 }
 
 function growSnake(pastHeadDir, x, y) {
-    let part;
-    if (snake.at(0).direction === pastHeadDir) {
-        part = newPart('body', pastHeadDir, x, y, 0);
-        part.element.children[0].setAttribute('d', bodyStraightD[snake.at(0).direction][0]);
-        part.element.children[1].setAttribute('d', bodyStraightD[snake.at(0).direction][1]);
+    let part, pathsSmall;
+    if (direction === pastHeadDir) {
+        part = newPart('body', pastHeadDir, x, y);
+        pathsSmall = rescaleSVG([bodyStraightD[snake.at(0).direction][0], bodyStraightD[snake.at(0).direction][1]], 1, true);
     } else {
-        part = newPart('bodyC', pastHeadDir, x, y, 0);
-        let newPartDir = [pastHeadDir, snake.at(0).direction].join('_');
-        part.element.children[0].setAttribute('d', bodyCurvedD[newPartDir][0]);
-        part.element.children[1].setAttribute('d', bodyCurvedD[newPartDir][1]);
+        part = newPart('bodyC', pastHeadDir, x, y);
+        let newPartDir = [pastHeadDir, direction].join('_');
+        pathsSmall = rescaleSVG([bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]], 1, true);
     }
+    part.element.children[0].setAttribute('d', pathsSmall[0]);
+    part.element.children[1].setAttribute('d', pathsSmall[1]);
     snake.splice(1, 0, part);
-    setTimeout(function () {
-        snake.at(1).element.style.scale = '1';
-    }, 50);
 }
 
 /**
