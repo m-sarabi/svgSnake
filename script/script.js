@@ -286,10 +286,44 @@ function interpolate(path1, path2, t) {
     }).join(' ');
 }
 
-function morph(morphInfo) {
+function moveMorph(part, t, end = false, first = false) {
+    let x, y;
+    switch (part[1]) {
+        case 'up':
+            [x, y] = [0, -cellSize];
+            break;
+        case 'right':
+            [x, y] = [cellSize, 0];
+            break;
+        case 'down':
+            [x, y] = [0, cellSize];
+            break;
+        case 'left':
+            [x, y] = [-cellSize, 0];
+            break;
+    }
+    if (first) {
+        part[0].x += x;
+        part[0].y += y;
+    }
+
+    if (end) {
+        part[0].element.style.left = part[2][0] + x + 'px';
+        part[0].element.style.top = part[2][1] + y + 'px';
+    } else {
+        part[0].element.style.left = part[2][0] + x * t + 'px';
+        part[0].element.style.top = part[2][1] + y * t + 'px';
+    }
+}
+
+function morph(morphInfo, movingParts) {
     let start = null;
     let t = 0;
     let progress;
+
+    for (let movingPart of movingParts) {
+        moveMorph(movingPart, t, false, true);
+    }
 
     function animateMorph(timestamp) {
         if (!start) {
@@ -306,6 +340,9 @@ function morph(morphInfo) {
                     part[0][childIndex - 1].setAttribute('d', interpolate(part[childIndex][0], part[childIndex][1], t));
                 }
             }
+            for (let movingPart of movingParts) {
+                moveMorph(movingPart, t);
+            }
 
             requestAnimationFrame(animateMorph);
         } else {
@@ -313,6 +350,9 @@ function morph(morphInfo) {
                 for (let childIndex = 1; childIndex < part.length; childIndex++) {
                     part[0][childIndex - 1].setAttribute('d', part[childIndex][1]);
                 }
+            }
+            for (let movingPart of movingParts) {
+                moveMorph(movingPart, t, true);
             }
         }
     }
@@ -533,7 +573,7 @@ function moveSnake() {
     for (let i = 1; i < snake.length; i++) {
         newDirections.push(pastDirections[i - 1]);
     }
-    let morphInfo = [];
+    let morphInfo = [], movingParts = [];
 
     if (eatFood()) {
         growSnake(pastDirections[0], pastHeadPos[0], pastHeadPos[1]);
@@ -579,15 +619,18 @@ function moveSnake() {
                     // }
                 }
             }
-            movePart(snake.at(i), pastDirections[i - 1]);
+            movingParts.push([snake.at(i), pastDirections[i - 1], [snake.at(i).x, snake.at(i).y]]);
+            // movePart(snake.at(i), pastDirections[i - 1]);
             snake.at(i).direction = pastDirections[i - 1];
         }
     }
-    morph(morphInfo);
+    console.log([snake.at(0).x, snake.at(0).y]);
+    movingParts.push([snake.at(0), direction, [snake.at(0).x, snake.at(0).y]]);
+    morph(morphInfo, movingParts);
     if (direction !== snake.at(0).direction) {
         rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
     }
-    movePart(snake.at(0), direction);
+    // movePart(snake.at(0), direction);
     snake.at(0).direction = direction;
 }
 
@@ -758,11 +801,8 @@ function keyPressed(key) {
 
 let style = document.styleSheets[0];
 let rules = style.cssRules;
-rules[0]['style']['transition'] = 'top ' + speed + 'ms linear, ' + 'left ' + speed + 'ms linear';
-rules[1]['style']['transition'] = 'top ' + speed + 'ms linear, ' + 'left ' + speed + 'ms linear';
 rules[1]['style']['width'] = cellSize + 'px';
 rules[1]['style']['height'] = cellSize + 'px';
-rules[2]['style']['transition'] = 'all ' + speed + 'ms linear';
 rules[3]['style']['transition'] = 'all ' + speed + 'ms linear';
 
 let snake = [];

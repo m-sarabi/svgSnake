@@ -1,15 +1,15 @@
 .part * {
-    transition: transform 500ms linear;
+    /*transition: transform 500ms linear;*/
 }
 
 .part {
-    transition: transform 500ms linear;
+    /*transition: transform 500ms linear;*/
     width: 40px;
     height: 40px;
 }
 
 .ends {
-    transition: all 500ms linear;
+    /*transition: all 500ms linear;*/
 }
 
 .ends * {
