@@ -276,13 +276,13 @@ function interpolate(path1, path2, t) {
 
         // noinspection JSCheckFunctionSignatures
         if (isFinite(value1)) {
-            return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * t;
+            return parseFloat(value1) + (parseFloat(parts2[index]) - parseFloat(value1)) * Math.min(t, 1);
         }
         return value1;
     }).join(' ');
 }
 
-function morph(path, path1, path2, snakePartI) {
+function morph(path, path1, path2) {
     let start = null;
     let t = 0;
     let progress;
@@ -301,12 +301,7 @@ function morph(path, path1, path2, snakePartI) {
         t = (progress % duration) / duration;
 
         if (t >= pt) {
-            const interp = interpolate(path1, path2, t);
-            if (snakePartI === 1) {
-                console.log(path1);
-                console.log(path2);
-            }
-            path.setAttribute('d', interp);
+            path.setAttribute('d', interpolate(path1, path2, t));
 
             requestAnimationFrame(animateMorph);
         } else {
