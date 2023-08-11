@@ -79,40 +79,53 @@ bodyStraightPathStroke.setAttribute('stroke', 'black');
 bodyStraightSVG.appendChild(bodyStraightPath);
 bodyStraightSVG.appendChild(bodyStraightPathStroke);
 
-const headPathD = rescaleSVG([
-    'M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10',
-    'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22',
-    'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30',
-    'M 15 11 C 15.67 11 15.67 12 15 12 C 14.33 12 14.33 11 15 11 M 15 29 C 15.67 29 15.67 28 15 28 C 14.33 28 14.33 29 15 29']);
+const headPathD = rescaleSVG({
+    right: ['M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10',
+        'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22',
+        'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30',
+        'M 15 11 C 15.67 11 15.67 12 15 12 C 14.33 12 14.33 11 15 11 M 15 29 C 15.67 29 15.67 28 15 28 C 14.33 28 14.33 29 15 29'],
+    down: ['M 10 0 C 10 5 10 5 10 10 C 5 15 5 15 10 20 C 10 25 10 25 10 30 C 10 40 30 40 30 30 C 30 25 30 25 30 20 C 35 15 35 15 30 10 C 30 5 30 5 30 -0',
+        'M 25 33 C 24 34 23 34 22 33 M 15 33 C 16 34 17 34 18 33',
+        'M 30 15 C 30 18 27 18 27 15 C 27 13 30 13 30 15 M 10 15 C 10 18 13 18 13 15 C 13 13 10 13 10 15',
+        'M 29 15 C 29 15.67 28 15.67 28 15 C 28 14.33 29 14.33 29 15 M 11 15 C 11 15.67 12 15.67 12 15 C 12 14.33 11 14.33 11 15'],
+    left: ['M 40 10 C 35 10 35 10 30 10 C 25 5 25 5 20 10 C 15 10 15 10 10 10 C 0 10 0 30 10 30 C 15 30 15 30 20 30 C 25 35 25 35 30 30 C 35 30 35 30 40 30',
+        'M 7 25 C 6 24 6 23 7 22 M 7 15 C 6 16 6 17 7 18',
+        'M 25 30 C 22 30 22 27 25 27 C 27 27 27 30 25 30 M 25 10 C 22 10 22 13 25 13 C 27 13 27 10 25 10',
+        'M 25 29 C 24.33 29 24.33 28 25 28 C 25.67 28 25.67 29 25 29 M 25 11 C 24.33 11 24.33 12 25 12 C 25.67 12 25.67 11 25 11'],
+    up: ['M 30 40 C 30 35 30 35 30 30 C 35 25 35 25 30 20 C 30 15 30 15 30 10 C 30 -0 10 0 10 10 C 10 15 10 15 10 20 C 5 25 5 25 10 30 C 10 35 10 35 10 40',
+        'M 15 7 C 16 6 17 6 18 7 M 25 7 C 24 6 23 6 22 7',
+        'M 10 25 C 10 22 13 22 13 25 C 13 27 10 27 10 25 M 30 25 C 30 22 27 22 27 25 C 27 27 30 27 30 25',
+        'M 11 25 C 11 24.33 12 24.33 12 25 C 12 25.67 11 25.67 11 25 M 29 25 C 29 24.33 28 24.33 28 25 C 28 25.67 29 25.67 29 25'],
+
+});
 // snake head
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
 headSVG.setAttribute('class', 'ends');
 headSVG.style.position = 'absolute';
-const headGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 const headMain = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headMain.setAttribute('d', headPathD[0]);
+headMain.setAttribute('d', headPathD.right[0]);
 headMain.setAttribute('fill', 'orange');
 headMain.setAttribute('stroke', 'black');
 const headNose = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headNose.setAttribute('d', headPathD[1]);
+headNose.setAttribute('d', headPathD.right[1]);
 headNose.setAttribute('fill', 'transparent');
 headNose.setAttribute('stroke', 'black');
 headNose.setAttribute('stroke-linecap', 'round');
 const headEyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headEyes.setAttribute('d', headPathD[2]);
+headEyes.setAttribute('d', headPathD.right[2]);
 headEyes.setAttribute('fill', 'white');
 headEyes.setAttribute('stroke', 'black');
 const headPupil = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-headPupil.setAttribute('d', headPathD[3]);
+headPupil.setAttribute('d', headPathD.right[3]);
 headPupil.setAttribute('fill', 'black');
 headPupil.setAttribute('stroke', 'black');
 headPupil.setAttribute('stroke-width', '0.5');
-headGroup.appendChild(headMain);
-headGroup.appendChild(headNose);
-headGroup.appendChild(headEyes);
-headGroup.appendChild(headPupil);
-headSVG.appendChild(headGroup);
+headSVG.appendChild(headMain);
+headSVG.appendChild(headNose);
+headSVG.appendChild(headEyes);
+headSVG.appendChild(headPupil);
+// headSVG.appendChild(headGroup);
 
 // foods as svg path
 const ApplePathD = rescaleSVG(['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
@@ -425,19 +438,7 @@ function movePart(part, direction) {
  * @param clockwise {boolean} whether to rotate it clockwise or counter-clockwise
  */
 function rotatePart(part, clockwise) {
-    let children;
-    if (part.type === 'head') {
-        children = part.element.children[0].children;
-        // let childAnim = children[2].children[0];
-        // let animPaths = childAnim.getAttribute('values').split(';');
-        // for (let i = 0; i < animPaths.length; i++) {
-        //     animPaths[i] = rotatePath(animPaths[i], clockwise);
-        // }
-        // childAnim = animPaths.join(';');
-        // children[2].children[0].setAttribute('values', childAnim);
-    } else {
-        children = part.element.children;
-    }
+    let children = part.element.children;
     for (const child of children) {
         let path = rotatePath(child.getAttribute('d'), clockwise);
         child.setAttribute('d', path);
@@ -585,8 +586,6 @@ function moveSnake() {
             paths = [bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]];
             pathsSmall = rescaleSVG([bodyCurvedD[newPartDir][0], bodyCurvedD[newPartDir][1]], 1, true);
         }
-        console.log(paths);
-        console.log(pathsSmall);
         morphInfo.push([snake.at(1).element.children,
             [pathsSmall[0], paths[0]],
             [pathsSmall[1], paths[1]]]);
@@ -623,11 +622,15 @@ function moveSnake() {
             snake.at(i).direction = pastDirections[i - 1];
         }
     }
-    console.log([snake.at(0).x, snake.at(0).y]);
     movingParts.push([snake.at(0), direction, [snake.at(0).x, snake.at(0).y]]);
     morph(morphInfo, movingParts);
     if (direction !== snake.at(0).direction) {
-        rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
+        morphInfo.push([snake.at(0).element.children,
+            [headPathD[snake.at(0).direction][0], headPathD[direction][0]],
+            [headPathD[snake.at(0).direction][1], headPathD[direction][1]],
+            [headPathD[snake.at(0).direction][2], headPathD[direction][2]],
+            [headPathD[snake.at(0).direction][3], headPathD[direction][3]]]);
+        // rotatePart(snake.at(0), isClockwise(snake.at(0).direction, direction));
     }
     // movePart(snake.at(0), direction);
     snake.at(0).direction = direction;
@@ -800,9 +803,8 @@ function keyPressed(key) {
 
 let style = document.styleSheets[0];
 let rules = style.cssRules;
-rules[1]['style']['width'] = cellSize + 'px';
-rules[1]['style']['height'] = cellSize + 'px';
-rules[3]['style']['transition'] = 'all ' + speed + 'ms linear';
+rules[0]['style']['width'] = cellSize + 'px';
+rules[0]['style']['height'] = cellSize + 'px';
 
 let snake = [];
 let foods = [];
