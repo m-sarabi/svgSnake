@@ -83,7 +83,7 @@ const headPathD = rescaleSVG([
     'M 0 30 C 5 30 5 30 10 30 C 15 35 15 35 20 30 C 25 30 25 30 30 30 C 40 30 40 10 30 10 C 25 10 25 10 20 10 C 15 5 15 5 10 10 C 5 10 5 10 0 10',
     'M 33 15 C 34 16 34 17 33 18 M 33 25 C 34 24 34 23 33 22',
     'M 15 10 C 18 10 18 13 15 13 C 13 13 13 10 15 10 M 15 30 C 18 30 18 27 15 27 C 13 27 13 30 15 30',
-    'M 15 10 C 18 10 18 13 15 13 C 18 13 18 10 15 10 M 15 30 C 18 30 18 27 15 27 C 18 27 18 30 15 30']);
+    'M 15 11 C 15.67 11 15.67 12 15 12 C 14.33 12 14.33 11 15 11 M 15 29 C 15.67 29 15.67 28 15 28 C 14.33 28 14.33 29 15 29']);
 // snake head
 const headSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 headSVG.setAttribute('class', 'part');
@@ -103,16 +103,15 @@ const headEyes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 headEyes.setAttribute('d', headPathD[2]);
 headEyes.setAttribute('fill', 'white');
 headEyes.setAttribute('stroke', 'black');
-// const eyesAnimate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-// eyesAnimate.setAttribute('attributeName', 'd');
-// eyesAnimate.setAttribute('values', headPathD[2] + ';' + headPathD[2] + ';' + headPathD[3] + ';' + headPathD[2]);
-// eyesAnimate.setAttribute('keyTimes', '0;0.7;0.85;1');
-// eyesAnimate.setAttribute('dur', '5s');
-// eyesAnimate.setAttribute('repeatCount', 'indefinite');
-// headEyes.appendChild(eyesAnimate);
+const headPupil = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+headPupil.setAttribute('d', headPathD[3]);
+headPupil.setAttribute('fill', 'black');
+headPupil.setAttribute('stroke', 'black');
+headPupil.setAttribute('stroke-width', '0.5');
 headGroup.appendChild(headMain);
 headGroup.appendChild(headNose);
 headGroup.appendChild(headEyes);
+headGroup.appendChild(headPupil);
 headSVG.appendChild(headGroup);
 
 // foods as svg path
