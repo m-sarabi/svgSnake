@@ -1,7 +1,7 @@
 const cellSize = 40;
 const speed = 500;
 let boardSize = [10, 15];
-let openBorder = false;
+let openBorder = true;
 
 // all the svg parts and shapes are built with only cubic bézier curves
 
@@ -130,7 +130,7 @@ headSVG.appendChild(headPupil);
 // foods as svg path
 const ApplePathD = rescaleSVG(['M 20 11 C 26 10 30 14 30 20 C 30 26 26 30 20 30 C 14 30 10 26 10 20 C 10 14 14 10 20 11',
     'M 20 11 C 21 7 22 6 25 5 C 25 8 23 9 20 11']);
-// snake tail
+// apple food
 const appleSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 appleSVG.setAttribute('class', 'part');
 appleSVG.style.position = 'absolute';
@@ -173,9 +173,28 @@ bladePath.appendChild(bladeAnimate);
 bladeSVG.appendChild(bladePath);
 bladeSVG.appendChild(bladeCenterPath);
 
+
+// portal on the border teleporting
+const portalPathD = rescaleSVG({
+    right: ['M 25 3 C 30 1 37 8 37 20 C 37 32 30 39 25 37 C 16 33 16 7 25 3'],
+    down: ['M 37 25 C 39 30 32 37 20 37 C 8 37 1 30 3 25 C 7 16 33 16 37 25'],
+    left: ['M 15 37 C 10 39 3 32 3 20 C 3 8 10 1 15 3 C 24 7 24 33 15 37'],
+    up: ['M 3 15 C 1 10 8 3 20 3 C 32 3 39 10 37 15 C 33 24 7 24 3 15']
+});
+const portalSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+portalSVG.style.position = 'absolute';
+portalSVG.style.transform = 'scale(0)';
+const portalPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+portalSVG.setAttribute('class', 'portal');
+portalPath.setAttribute('d', portalPathD['left'][0]);
+portalPath.setAttribute('fill', 'black');
+portalPath.setAttribute('stroke', 'black');
+portalSVG.appendChild(portalPath);
+
 // playing board to hold all snake elements
 let board = document.createElement('div');
 board.style.position = 'relative';
+board.style.overflow = 'hidden';
 board.style.margin = '0 auto';
 board.style.width = boardSize[0] * cellSize + 'px';
 board.style.height = boardSize[1] * cellSize + 'px';
@@ -317,6 +336,50 @@ function moveMorph(part, t, end = false, first = false) {
     if (first) {
         part[0].x += x;
         part[0].y += y;
+        let crossed = [null];
+        if (openBorder) {
+            if (part[0].y < 0) {
+                crossed = ['up', part[2][0], part[2][1]];
+                part[0].y = (boardSize[1] - 1) * cellSize;
+                part[2][1] = boardSize[1] * cellSize;
+            } else if (part[0].y > (boardSize[1] - 1) * cellSize) {
+                crossed = ['down', part[2][0], part[2][1]];
+                part[0].y = 0;
+                part[2][1] = -cellSize;
+            } else if (part[0].x < 0) {
+                crossed = ['left', part[2][0], part[2][1]];
+                part[0].x = (boardSize[0] - 1) * cellSize;
+                part[2][0] = boardSize[0] * cellSize;
+            } else if (part[0].x > (boardSize[0] - 1) * cellSize) {
+                crossed = ['right', part[2][0], part[2][1]];
+                part[0].x = 0;
+                part[2][0] = -cellSize;
+            }
+            if (crossed[0] !== null && part[0].type === 'head') {
+                let portalID = 'I' + Math.floor(Math.random() * 1000);
+                portals[portalID] = (portalSVG.cloneNode(true));
+                portals[portalID].children[0].setAttribute('d', portalPathD[crossed[0]][0]);
+                portals[portalID].style.left = crossed[1];
+                portals[portalID].style.top = crossed[2];
+                board.appendChild(portals[portalID]);
+                setTimeout(function () {
+                    portals[portalID].style.transform = 'scale(1)';
+                }, speed * 0.1);
+                setTimeout(function () {
+                    portals[portalID].style.transform = 'scale(0)';
+                }, (snake.length * 1.1) * speed);
+                setTimeout(function () {
+                    portals[portalID].remove();
+                    delete portals[portalID];
+                }, (snake.length * 1.2) * speed);
+            }
+        } else {
+            if (part[0].type === 'head' && (part[0].y < 0 || part[0].y > (boardSize[1] - 1) * cellSize ||
+                part[0].x < 0 || part[0].x > (boardSize[0] - 1) * cellSize)) {
+                console.log('game over');
+                start = false;
+            }
+        }
     }
 
     if (end) {
@@ -805,34 +868,24 @@ let style = document.styleSheets[0];
 let rules = style.cssRules;
 rules[0]['style']['width'] = cellSize + 'px';
 rules[0]['style']['height'] = cellSize + 'px';
+rules[1]['style']['transition'] = speed / 2 + 'ms';
 
 let snake = [];
 let foods = [];
 let obstacles = [];
+let portals = {};
 
 function newBoard() {
     snake = [];
     foods = [];
     obstacles = [];
 
-    snake.push(newPart('head', 'right'));
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
+    snake.push(newPart('head', 'right', cellSize * 4));
     snake.at(0).element.style.zIndex = '10';
-    snake.push(newPart('body', 'right'));
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
-    snake.push(newPart('body', 'right'));
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'right');
-    snake.push(newPart('body', 'right'));
-    movePart(snake.at(-1), 'right');
+    snake.push(newPart('body', 'right', cellSize * 3));
+    snake.push(newPart('body', 'right', cellSize * 2));
+    snake.push(newPart('body', 'right', cellSize));
     snake.push(newPart('tail', 'right'));
-    movePart(snake.at(-1), 'right');
-    movePart(snake.at(-1), 'left');
 
     spawnFood();
 

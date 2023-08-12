@@ -3,6 +3,15 @@
     height: 40px;
 }
 
+.portal {
+    width: 40px;
+    height: 40px;
+}
+
+.portal > * {
+    filter: drop-shadow(0 0 5px purple);
+}
+
 #how-to {
     user-select: none;
     opacity: 0.5;
